@@ -23,6 +23,7 @@ def read_file(filename):
      datadomain[k].append(v)
  return datalist, attributes, coloumns
 
+#return a list with all targets
 def unrepeated_values(list):
     unique = []
     for item in list:
@@ -30,6 +31,7 @@ def unrepeated_values(list):
       unique.append(item)
     return unique
 
+#replace the class with a number from 1 to n where n is number of classes
 def switch_label(dataset, classes):
     n = len(classes)
     for i in range(n):
@@ -38,6 +40,7 @@ def switch_label(dataset, classes):
        datapoint[-1] = str(i+1)
     return datasetList
 
+#convert a list of lists of strings to float
 def string_to_float(dataset):
  dataset = [[float(item) for item in raws] for raws in dataset]
  for item in dataset:
@@ -54,6 +57,7 @@ def get_csv(dataset):
 
 
 if __name__ == "__main__":
+
     #datasetList is a list of lists of datas,
     #attributes is the first line
     #coloumns are the coloumns of vlaues refered to attributes
