@@ -39,7 +39,15 @@ def switch_label(dataset, classes):
     return datasetList
 
 def string_to_float(dataset):
- return [[float(item) for item in raws] for raws in dataset]
+ dataset = [[float(item) for item in raws] for raws in dataset]
+ for item in dataset:
+     item[-1] = int(item[-1])
+ return dataset
+
+def get_csv(dataset):
+    with open("newDataset.csv", "wb") as f:
+        writer = csv.writer(f)
+        writer.writerows(dataset)
 
 
 
@@ -54,7 +62,9 @@ if __name__ == "__main__":
     targets = coloumns['class']
     classes_string = sorted(unrepeated_values(targets))
     dataset = string_to_float(switch_label(datasetList, classes_string))
-    print dataset[0]
+    get_csv(dataset)
+
+
 
 
 
