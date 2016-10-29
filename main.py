@@ -1,6 +1,6 @@
 from dataStructures import *
-from lagrangean_s3vm import *
-from utils import *
+
+
 
 
 
@@ -13,6 +13,4 @@ if __name__ == "__main__":
     #extract which are the classes and order it alphabetically
     targets = coloumns['class']
     classes_string = sorted(unrepeated_values(targets))
-    x= switch_label(datasetList, classes_string)
-    dataset = string_to_float(x)
-    get_csv(dataset)
+    dataset = string_to_float(switch_label(datasetList, classes_string))
