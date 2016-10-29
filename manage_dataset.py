@@ -1,5 +1,5 @@
-import numpy as np
 from __future__ import division
+import numpy as np
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
 def get_lagrange_dataset(dataset, classes, l, u, pairwise = False):
@@ -7,7 +7,7 @@ def get_lagrange_dataset(dataset, classes, l, u, pairwise = False):
     if pairwise:
         get_pairwise_dataset(dataset, classes, l, u)
     else: #todo call others
-        print 'othe'
+        print 'others'
 
 def get_pairwise_dataset(dataset, targets, l, u):
     rdm = np.random.RandomState()

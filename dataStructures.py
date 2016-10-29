@@ -1,8 +1,10 @@
+from __future__ import division
 import os
 import csv
 import copy
 import random
 import numpy as np
+
 
 #the dataset must be a csv file with first raw containing all attributes
 #the class attribute like the last attribute of the raw
@@ -56,7 +58,33 @@ def string_to_float(dataset):
      item[-1] = int(item[-1])
  return dataset
 
-def get_csv(dataset):
-    with open("newDataset.csv", "wb") as f:
+#creates a csv file from a list of lists
+def get_csv(dataset, filename):
+    with open(filename + '.csv', 'wb') as f:
         writer = csv.writer(f)
         writer.writerows(dataset)
+
+#split a generic list in 2 lists. n is the length of the first list
+def splitter(myList, n):
+    firstList = myList[0:n]
+    secondList = myList[n:]
+    return (firstList, secondList)
+
+#split datasets in training and test wrt a user defined percentage for training
+#user can decide to have as test set the first part of dataset by setting swap to true
+
+def split_dataset(dataset, trainPercentage, swap = False):
+
+    #randomize the raws
+    random.shuffle(dataset)
+    #training percentage
+    m = int((len(dataset)*trainPercentage)/100)
+
+    if swap:
+        test, training = splitter(dataset, len(dataset) - m)
+    else: training, test = splitter(dataset, m)
+
+    return (training, test)
+
+
+
