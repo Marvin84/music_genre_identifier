@@ -58,7 +58,7 @@ def string_to_float(dataset):
      item[-1] = int(item[-1])
  return dataset
 
-#creates a csv file from a list of lists
+#creates a csv file named filename from a list
 def get_csv(dataset, filename):
     with open(filename + '.csv', 'wb') as f:
         writer = csv.writer(f)
@@ -78,13 +78,29 @@ def split_dataset(dataset, trainPercentage, swap = False):
     #randomize the raws
     random.shuffle(dataset)
     #training percentage
-    m = int((len(dataset)*trainPercentage)/100)
+    m = get_number_from_percentage(len(dataset), trainPercentage)
+    print m
 
     if swap:
         test, training = splitter(dataset, len(dataset) - m)
     else: training, test = splitter(dataset, m)
 
     return (training, test)
+
+def get_number_from_percentage(listLength, percentage):
+    return int((listLength* percentage) / 100)
+
+def get_l_u(dataset, percentageLabel):
+    l = get_number_from_percentage(len(dataset), percentageLabel)
+    u = len(dataset) - l
+    return (l,u)
+
+# training, test = split_dataset(dataset, 50)
+# trainingArray = np.array([datapoint for datapoint in training if datapoint[-1] in targets])
+# testArray = np.array([datapoint for datapoint in test if datapoint[-1] in targets])
+# dataset = np.concatenate((trainingArray, testArray))
+
+
 
 
 
