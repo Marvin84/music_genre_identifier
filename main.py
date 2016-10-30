@@ -1,4 +1,4 @@
-from lagrangeAlgorithm import *
+from launchAlgorithms import *
 
 
 
