@@ -93,6 +93,14 @@ def get_l_u(dataset, percentageLabel):
     u = len(dataset) - l
     return (l,u)
 
+def append_array_to_new_list(myArray):
+
+    list = []
+    for item in myArray:
+        list.append(item)
+    return list
+
+
 # training, test = split_dataset(dataset, 50)
 # trainingArray = np.array([datapoint for datapoint in training if datapoint[-1] in targets])
 # testArray = np.array([datapoint for datapoint in test if datapoint[-1] in targets])

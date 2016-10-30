@@ -28,9 +28,8 @@ if __name__ == "__main__":
 
         percentageLabel = input("Insert the percentage of labeled data\n")
         #call a function for a specific algorithm
-        scoreLagrange = launch_lagrange(training, test, percentageLabel, .5)
-        print scoreLagrange
-
+        launch_lagrange(training, test, percentageLabel, .5)
+        launch_qn_algorithm(training, test, percentageLabel, .5)
 
 
 
