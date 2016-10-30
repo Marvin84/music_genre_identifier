@@ -78,7 +78,6 @@ def split_dataset(dataset, trainPercentage, swap = False):
     mySeed.rdm.shuffle(dataset)
     #training percentage
     m = get_number_from_percentage(len(dataset), trainPercentage)
-    print m
 
     if swap:
         test, training = splitter(dataset, len(dataset) - m)

@@ -15,17 +15,21 @@ if __name__ == "__main__":
     targets = coloumns['class']
     classes_string = sorted(unrepeated_values(targets))
     dataset = string_to_float(switch_label(datasetList, classes_string))
-    choice = input("Insert 1 if you split the whole dataset in labaled/unlabaled, unless 2\n")
+    choice = input("Insert 1 if you have a seperate test set, unless 2\n")
     if (choice == 1 or choice == 2):
         if choice == 1:
             training = dataset
+            filename = input("insert the path to test set")
+            test, attributes, coloumns = read_file('/dataset.csv')
+
         else:
             percentageTrain = input("Insert percentage of the training set\n")
-            training, test = split_dataset(dataset, get_number_from_percentage(len(dataset), percentageTrain))
+            training, test = split_dataset(dataset, percentageTrain)
 
         percentageLabel = input("Insert the percentage of labeled data\n")
         #call a function for a specific algorithm
-        scoreLagrange = launch_lagrange(dataset, percentageLabel)
+        scoreLagrange = launch_lagrange(training, test, percentageLabel, .5)
+        print scoreLagrange
 
 
 
