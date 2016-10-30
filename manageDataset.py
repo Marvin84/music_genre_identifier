@@ -33,38 +33,10 @@ def get_qn_dataset(training, test, percentageLabel):
 
     #you must have a list of numpy arrays
     l, u = get_l_u(training, percentageLabel)
-
-    '''
-    #complicated solution
-    trainListArray = []
-    for item in training:
-        trainListArray.append(np.array(item))
-    testListArray = []
-    for item in test:
-        testListArray.append(np.array(item))
-    trainListArrayL, trainListArrayU = splitter(trainListArray, l)
-
-    xTrainL = []
-    yTrainL = []
-    for index in range(len(trainListArrayL)):
-        if index < len(trainListArrayL):
-            xTrainL.append(trainListArrayL[index])
-        else: yTrainL.append(trainListArrayL[index])
-    del trainListArrayU[-1]
-    xTrainU = trainListArrayU
-
-    xTest = []
-    yTest = []
-    for index in range(len(trainListArrayL)):
-        if index < len(trainListArrayL):
-            xTest.append(trainListArrayL[index])
-        else: yTest.append(trainListArrayL[index])
-    '''
-
     trainArray = np.array(training)
     testArray = np.array(test)
 
-
+    #create arrays for labels qn needs int
     xTrainArrayL = trainArray[:l, :(len(trainArray[0]) - 1)]
     y = trainArray[:l,(len(trainArray[0]) - 1)]
     yTrainArrayL = y.astype(int)
@@ -73,7 +45,7 @@ def get_qn_dataset(training, test, percentageLabel):
     y = testArray[:, len(testArray[0]) - 1]
     yTestArray = y.astype(int)
 
-
+    #qn needs a list of arrays
     xTrainL = append_array_to_new_list(xTrainArrayL)
     yTrainL = append_array_to_new_list(yTrainArrayL)
     xTrainU = append_array_to_new_list(xTrainArrayU)
