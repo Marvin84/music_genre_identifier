@@ -2,8 +2,7 @@ from __future__ import division
 import os
 import csv
 import copy
-import random
-import numpy as np
+import mySeed
 
 
 #the dataset must be a csv file with first raw containing all attributes
@@ -76,7 +75,7 @@ def splitter(myList, n):
 def split_dataset(dataset, trainPercentage, swap = False):
 
     #randomize the raws
-    random.shuffle(dataset)
+    mySeed.rdm.shuffle(dataset)
     #training percentage
     m = get_number_from_percentage(len(dataset), trainPercentage)
     print m
