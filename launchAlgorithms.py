@@ -15,6 +15,7 @@ def launch_lagrange(training, test, percentageLabel, r, parTarget = None):
                                  gamma=best_estimator.gamma, kernel=best_estimator.kernel, r=r, rdm = mySeed.rdm)
 
     print "The score is: ", model.score(xTest,yTest)
+    return model
 
 
 def launch_qn_algorithm(training, test, percentageLabel, r):
@@ -25,5 +26,28 @@ def launch_qn_algorithm(training, test, percentageLabel, r):
     preds = model.getPredictions(xTest)
     error = classification_error(preds,yTest)
     print "Classification error of QN-S3VM: ", error
+    return model
+
+
+def launch_oneVsRest_lagrange(training, test, percentageLabel, r):
+    models = {}
+    targets = []
+    for key, value in training.iteritems():
+        targets.append(key)
+
+    for i in range(len(targets)):
+        models[targets[i]] = launch_lagrange(training[targets[i]], test, percentageLabel, r)
+    
+
+
+
+
+
+
+
+
+
+
+
 
 

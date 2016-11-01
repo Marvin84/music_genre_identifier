@@ -3,6 +3,7 @@ import os
 import csv
 import copy
 import mySeed
+import random
 
 
 #the dataset must be a csv file with first raw containing all attributes
@@ -74,8 +75,11 @@ def splitter(myList, n):
 
 def split_dataset(dataset, trainPercentage, swap = False):
 
+    print dataset[0]
+
     #randomize the raws
     mySeed.rdm.shuffle(dataset)
+    print dataset[0]
     #training percentage
     m = get_number_from_percentage(len(dataset), trainPercentage)
 
@@ -99,6 +103,31 @@ def append_array_to_new_list(myArray):
     for item in myArray:
         list.append(item)
     return list
+
+#it takes a list of classes refered to the class coloumn of dataset
+#returns 2 values a dictionary with key : value as name of class : a number
+# and the list of number associetaed with the classes
+def  get_classes(classes):
+    targets = sorted(unrepeated_values(classes))
+    d = {}
+    for i in range(len(targets)):
+        d[targets[i]] = i+1
+    return d, targets
+
+def get_multiclass_dataset(dataset, targets, targetsDic):
+    mySeed.rdm.shuffle(dataset)
+    trainingDic = {}
+    for i in range(len(targetsDic)):
+        train = []
+        for item in dataset:
+            datapoint = copy.copy(item)
+            if datapoint[-1] == targetsDic[targets[i]]:
+                datapoint[-1] = 1
+            else: datapoint[-1] = -1
+            train.append(datapoint)
+
+        trainingDic[targets[i]] = train
+    return trainingDic
 
 
 # training, test = split_dataset(dataset, 50)
