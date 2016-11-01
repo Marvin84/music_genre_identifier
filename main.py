@@ -23,16 +23,16 @@ if __name__ == "__main__":
             training, test = split_dataset(dataset, percentageTrain)
 
         percentageLabel = input("Insert the percentage of labeled data\n")
-        multiclassTraining = get_multiclass_dataset(training, targets, targetsDic)
+
 
 
         # call a function for a specific algorithm
         # remember to chose r
 
         models = {}
-        models['lagrange'] = launch_lagrange(training, test, percentageLabel, .5, [5, 9])
-        models['qn'] = launch_qn_algorithm(training, test, percentageLabel, .0)
-        launch_oneVsRest_lagrange(multiclassTraining, test, percentageLabel, .5)
+        #models['lagrange'] = launch_lagrange(training, test, percentageLabel, .5, True, [5, 9])
+        #models['qn'] = launch_qn_algorithm(training, test, percentageLabel, .0)
+        launch_oneVsRest_lagrange(training, test, targets, targetsDic, percentageLabel, .5)
 
 
 

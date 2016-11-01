@@ -75,11 +75,8 @@ def splitter(myList, n):
 
 def split_dataset(dataset, trainPercentage, swap = False):
 
-    print dataset[0]
-
     #randomize the raws
     mySeed.rdm.shuffle(dataset)
-    print dataset[0]
     #training percentage
     m = get_number_from_percentage(len(dataset), trainPercentage)
 
@@ -114,20 +111,22 @@ def  get_classes(classes):
         d[targets[i]] = i+1
     return d, targets
 
+#creates a dictionary where the key is a class and the value is the training set with that label
+#set to 1 and others set to -1
 def get_multiclass_dataset(dataset, targets, targetsDic):
     mySeed.rdm.shuffle(dataset)
-    trainingDic = {}
+    dataDic = {}
     for i in range(len(targetsDic)):
-        train = []
+        data = []
         for item in dataset:
             datapoint = copy.copy(item)
             if datapoint[-1] == targetsDic[targets[i]]:
                 datapoint[-1] = 1
             else: datapoint[-1] = -1
-            train.append(datapoint)
+            data.append(datapoint)
 
-        trainingDic[targets[i]] = train
-    return trainingDic
+            dataDic[targets[i]] = data
+    return dataDic
 
 
 # training, test = split_dataset(dataset, 50)

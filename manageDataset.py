@@ -4,8 +4,7 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler
 import numpy as np
 import mySeed
 
-def get_lagrange_dataset(training, test, pairTarget, percentageLabel, pairwise = False):
-    #dataset = all training set
+def get_lagrange_dataset(training, test, percentageLabel, pairTarget, pairwise = False):
     #pair target is a list of 2 classes, set None if you are not using pairwise
     #percentage of labeled datapoints
     #set True if you want to do a pairwise comparation
@@ -17,17 +16,20 @@ def get_lagrange_dataset(training, test, pairTarget, percentageLabel, pairwise =
         l, u = get_l_u(pairTrain, percentageLabel)
         data = pairTrain+pairTest
         dataArray = np.array(data)
-        return get_pairwise_dataset(dataArray, l, u)
-    else: #todo call others
-        print 'others'
+    else:
+        #here the training and test are already ready
+        l, u = get_l_u(training, percentageLabel)
+        data = training+test
+        dataArray = np.array(data)
 
-def get_pairwise_dataset(dataset, l, u):
+    data = dataArray[:, :(len(dataArray[0]) - 1)]
+    data = MinMaxScaler(feature_range=(0, 1)).fit_transform(data)
+    targets = dataArray[:, len(dataArray[0]) - 1]
+    targets = np.array([1 if y == targets[0] else -1 for y in targets])
+    return data[:l], targets[:l], data[l:l + u], data[l + u:], targets[l + u:], l, u
 
-    data = dataset[:, :(len(dataset[0]) - 1)]
-    data = MinMaxScaler(feature_range=(0,1)).fit_transform(data)
-    targets = dataset[:, len(dataset[0]) - 1 ]
-    targets = np.array([1 if y==targets[0] else -1 for y in targets])
-    return data[:l], targets[:l], data[l:l+u], data[l+u:], targets[l+u:], l, u
+
+
 
 def get_qn_dataset(training, test, percentageLabel):
 
