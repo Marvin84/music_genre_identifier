@@ -14,19 +14,21 @@ def get_lagrange_dataset(training, test, percentageLabel, pairTarget, pairwise =
         pairTrain = [datapoint for datapoint in training if datapoint[-1] in pairTarget]
         pairTest = [datapoint for datapoint in test if datapoint[-1] in pairTarget]
         l, u = get_l_u(pairTrain, percentageLabel)
-        data = pairTrain+pairTest
-        dataArray = np.array(data)
+        set = pairTrain+pairTest
+        dataArray = np.array(set)
     else:
         #here the training and test are already ready
         l, u = get_l_u(training, percentageLabel)
-        data = training+test
-        dataArray = np.array(data)
+        dataArray = np.array(training)
 
-    data = dataArray[:, :(len(dataArray[0]) - 1)]
-    data = MinMaxScaler(feature_range=(0, 1)).fit_transform(data)
+    datapoints = dataArray[:, :(len(dataArray[0]) - 1)]
+    datapoints = MinMaxScaler(feature_range=(0, 1)).fit_transform(datapoints)
     targets = dataArray[:, len(dataArray[0]) - 1]
     targets = np.array([1 if y == targets[0] else -1 for y in targets])
-    return data[:l], targets[:l], data[l:l + u], data[l + u:], targets[l + u:], l, u
+
+    if pairwise:
+        return datapoints[:l], targets[:l], datapoints[l:l + u], datapoints[l + u:], targets[l + u:], l, u
+    else: return datapoints[:l], datapoints[:l], datapoints[l:l + u], l, u
 
 
 

@@ -1,9 +1,11 @@
 from sklearn.multiclass import OneVsRestClassifier
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from manageDataset import *
 from lagrange.lagrangean_s3vm import *
 from qn.qns3vm import *
 from qn.examples import *
 import qn.randomGenerator
+import copy
 import mySeed
 
 
@@ -13,7 +15,7 @@ def launch_lagrange(training, test, percentageLabel, r, pairwise = False, pairTa
     if pairwise:
         xTrainL, yTrainL, xTrainU, xTest, yTest, l, u = get_lagrange_dataset(training, test, percentageLabel, pairTarget, pairwise)
     else:
-        xTrainL, yTrainL, xTrainU, xTest, yTest, l, u = get_lagrange_dataset(training, test, percentageLabel, pairTarget, pairwise)
+        xTrainL, yTrainL, xTrainU, l, u = get_lagrange_dataset(training, test, percentageLabel, pairTarget, pairwise)
 
     best_estimator = get_best_estimator_by_cv(xTrainL, yTrainL, 3)
     model = lagrangian_s3vm_train(l, u, xTrainL, yTrainL, xTrainU, C=best_estimator.C,
@@ -38,24 +40,17 @@ def launch_oneVsRest_lagrange(training, test, targets, targetsDic, percentageLab
 
     models = {}
     multiclassTraining = get_multiclass_dataset(training, targets, targetsDic)
+    xTest = []
+    yTest = [y[len(test[0])-1] for y in test]
+    for item in test:
+        x = copy.copy(item)
+        del x[len(item)-1]
+        xTest.append(x)
+    xTestArray = MinMaxScaler(feature_range=(0, 1)).fit_transform(np.array(xTest))
+    yTestArray = np.array(yTest)
 
     #training models
     for i in range(len(targets)):
         models[targets[i]] = launch_lagrange(multiclassTraining[targets[i]], test, percentageLabel, r)
-        #print models[targets[i]]
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
