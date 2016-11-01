@@ -53,4 +53,4 @@ def launch_oneVsRest_lagrange(training, test, targets, targetsDic, percentageLab
     for i in range(len(targets)):
         models[targets[i]] = launch_lagrange(multiclassTraining[targets[i]], test, percentageLabel, r)
 
-    
+    print OneVsRestClassifier(models['blues'].predict(xTest))
