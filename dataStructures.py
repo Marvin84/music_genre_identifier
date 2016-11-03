@@ -1,4 +1,5 @@
 from __future__ import division
+import numpy as np
 import os
 import csv
 import copy
@@ -148,16 +149,27 @@ def get_numbered_classes(targets):
         numberTargets.append(i+1)
     return numberTargets
 
+
+
 def get_pair_dataset(training, test, percentageLabel, pairTarget):
 
     pairTrain = [datapoint for datapoint in training if datapoint[-1] in pairTarget]
     pairTest = [datapoint for datapoint in test if datapoint[-1] in pairTarget]
     l, u = get_l_u(pairTrain, percentageLabel)
-
     return pairTrain, pairTest, l, u
 
 
+def get_train_test_targets(training, test, percentageLabel, pairTarget = None):
 
+    pairTrain, pairTest, l, u = get_pair_dataset(training, test, percentageLabel, pairTarget)
+    trainArray = np.array(pairTrain)
+    testArray = np.array(pairTest)
+    datapointsTrain = trainArray[:, :(len(trainArray[0]) - 1)]
+    targetsTrain = trainArray[:, len(trainArray[0]) - 1]
+    datapointsTest = testArray[:, :(len(trainArray[0]) - 1)]
+    targetsTest = testArray[:, len(trainArray[0]) - 1]
+
+    return datapointsTrain, targetsTrain, datapointsTest,targetsTest
 
 
 
