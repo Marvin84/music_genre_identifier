@@ -30,8 +30,8 @@ if __name__ == "__main__":
         # remember to chose r
 
         models = {}
-        models['lagrange'] = launch_lagrange(training, test, percentageLabel, .5, True, [5, 9])
-        models['qn'] = launch_qn_algorithm(training, test, percentageLabel, .0)
+        #models['lagrange'] = launch_lagrange(training, test, percentageLabel, .5, True, [1, 3])
+        #models['qn'] = launch_qn_algorithm(training, test, percentageLabel, .0, True, [1,3])
         launch_oneVsRest_lagrange(training, test, targets, targetsDic, percentageLabel, .5)
 
 

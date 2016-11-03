@@ -11,9 +11,7 @@ def get_lagrange_dataset(training, test, percentageLabel, pairTarget, pairwise =
 
 
     if pairwise:
-        pairTrain = [datapoint for datapoint in training if datapoint[-1] in pairTarget]
-        pairTest = [datapoint for datapoint in test if datapoint[-1] in pairTarget]
-        l, u = get_l_u(pairTrain, percentageLabel)
+        pairTrain, pairTest, l, u = get_pair_dataset(training, test, percentageLabel, pairTarget)
         set = pairTrain+pairTest
         dataArray = np.array(set)
         targets = dataArray[:, len(dataArray[0]) - 1]
@@ -38,12 +36,14 @@ def get_lagrange_dataset(training, test, percentageLabel, pairTarget, pairwise =
 
 
 
-def get_qn_dataset(training, test, percentageLabel):
+def get_qn_dataset(training, test, percentageLabel, pairwise, pairTarget):
 
     #you must have a list of numpy arrays
-    l, u = get_l_u(training, percentageLabel)
-    trainArray = np.array(training)
-    testArray = np.array(test)
+    if pairwise:
+        pairTrain, pairTest, l, u = get_pair_dataset(training, test, percentageLabel, pairTarget)
+        trainArray = np.array(pairTrain)
+        testArray = np.array(pairTest)
+    else: print "not pairwise version"
 
     #create arrays for labels qn needs int
     xTrainArrayL = trainArray[:l, :(len(trainArray[0]) - 1)]

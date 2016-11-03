@@ -79,15 +79,15 @@ def split_dataset(dataset, trainPercentage, swap = False):
     mySeed.rdm.shuffle(dataset)
     #training percentage
     m = get_number_from_percentage(len(dataset), trainPercentage)
-
     if swap:
         test, training = splitter(dataset, len(dataset) - m)
     else: training, test = splitter(dataset, m)
-
     return (training, test)
+
 
 def get_number_from_percentage(listLength, percentage):
     return int((listLength* percentage) / 100)
+
 
 def get_l_u(dataset, percentageLabel):
     l = get_number_from_percentage(len(dataset), percentageLabel)
@@ -95,7 +95,6 @@ def get_l_u(dataset, percentageLabel):
     return (l,u)
 
 def append_array_to_new_list(myArray):
-
     list = []
     for item in myArray:
         list.append(item)
@@ -127,6 +126,39 @@ def get_multiclass_dataset(dataset, targets, targetsDic):
 
             dataDic[targets[i]] = data
     return dataDic
+
+def get_data_target_lists(dataset):
+    xTest = []
+    yTest = [int(y[len(dataset[0])-1]) for y in dataset]
+    for item in dataset:
+        x = copy.copy(item)
+        del x[len(item)-1]
+        xTest.append(x)
+    return xTest, yTest
+
+def count_labels(dataset, targets):
+    count = [0] * len(targets)
+    for i in range(len(dataset)):
+        count[dataset[i]-1] += 1
+    return count
+
+def get_numbered_classes(targets):
+    numberTargets = []
+    for i in range(len(targets)):
+        numberTargets.append(i+1)
+    return numberTargets
+
+def get_pair_dataset(training, test, percentageLabel, pairTarget):
+
+    pairTrain = [datapoint for datapoint in training if datapoint[-1] in pairTarget]
+    pairTest = [datapoint for datapoint in test if datapoint[-1] in pairTarget]
+    l, u = get_l_u(pairTrain, percentageLabel)
+
+    return pairTrain, pairTest, l, u
+
+
+
+
 
 
 # training, test = split_dataset(dataset, 50)
