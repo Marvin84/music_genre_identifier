@@ -1,4 +1,5 @@
 from __future__ import division
+from sklearn.preprocessing import MinMaxScaler
 import numpy as np
 import os
 import csv
@@ -114,7 +115,7 @@ def  get_classes(classes):
 #creates a dictionary where the key is a class and the value is the training set with that label
 #set to 1 and others set to -1
 def get_multiclass_dataset(dataset, targets, targetsDic):
-    mySeed.rdm.shuffle(dataset)
+    #mySeed.rdm.shuffle(dataset)
     dataDic = {}
     for i in range(len(targetsDic)):
         data = []
@@ -149,34 +150,51 @@ def get_numbered_classes(targets):
         numberTargets.append(i+1)
     return numberTargets
 
+#it creates a new list and change the labels to 1 and -1
+def binary_targets(dataset, targets):
+    binaryDataset = copy.copy(dataset)
+    for item in binaryDataset:
+        if item[-1] == targets[0]:
+            item[-1] = 1
+        else: item[-1] = -1
+    return binaryDataset
+
+
 
 
 def get_pair_dataset(training, test, percentageLabel, pairTarget):
 
     pairTrain = [datapoint for datapoint in training if datapoint[-1] in pairTarget]
+    pairTrain = binary_targets(pairTrain, pairTarget)
     pairTest = [datapoint for datapoint in test if datapoint[-1] in pairTarget]
+    pairTest = binary_targets(pairTest, pairTarget)
+
     l, u = get_l_u(pairTrain, percentageLabel)
+
     return pairTrain, pairTest, l, u
 
 
-def get_train_test_targets(training, test, percentageLabel, pairTarget = None):
 
-    pairTrain, pairTest, l, u = get_pair_dataset(training, test, percentageLabel, pairTarget)
-    trainArray = np.array(pairTrain)
-    testArray = np.array(pairTest)
-    datapointsTrain = trainArray[:, :(len(trainArray[0]) - 1)]
-    targetsTrain = trainArray[:, len(trainArray[0]) - 1]
-    datapointsTest = testArray[:, :(len(trainArray[0]) - 1)]
-    targetsTest = testArray[:, len(trainArray[0]) - 1]
+# getting the scaled train and test sets and the test scaler
+# training was fit and transformed the test only fit
+def get_scaleDataset_and_scalers(train, test):
+    training = copy.copy(train)
+    # instantiate the MinMax instance for training and for test
+    mmTrain = MinMaxScaler(feature_range=(0,1))
+    mmTest = MinMaxScaler(feature_range=(0,1))
+    trainArray = np.array(training)
+    testArray = np.array(test)
+    trainData, trainTarget = trainArray[:, :(len(trainArray[0]) - 1)], trainArray[:, len(trainArray[0]) - 1]
+    trainData = mmTrain.fit_transform(trainData)
+    mmTest.fit(testArray[:, :(len(testArray[0]) - 1)])
+    trainArray = np.c_[trainData, trainTarget]
+    training = trainArray.tolist()
+    for item in training:
+        item[-1] = int(item[-1])
 
-    return datapointsTrain, targetsTrain, datapointsTest,targetsTest
 
+    return training, mmTrain, mmTest
 
-
-# training, test = split_dataset(dataset, 50)
-# trainingArray = np.array([datapoint for datapoint in training if datapoint[-1] in targets])
-# testArray = np.array([datapoint for datapoint in test if datapoint[-1] in targets])
-# dataset = np.concatenate((trainingArray, testArray))
 
 
 

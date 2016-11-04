@@ -1,38 +1,37 @@
 from __future__ import division
 from dataStructures import *
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
 import numpy as np
 import mySeed
 
-def get_lagrange_dataset(training, test, percentageLabel, pairTarget, pairwise = False):
+def get_lagrange_pairwise(training, test, testScaler, percentageLabel, pairTarget):
     #pair target is a list of 2 classes, set None if you are not using pairwise
     #percentage of labeled datapoints
-    #set True if you want to do a pairwise comparation
+    #use testScaler for transforming the test set to the valid one
 
+    pairTrain, pairTest, l, u = get_pair_dataset(training, test, percentageLabel, pairTarget)
+    trainArray = np.array(pairTrain)
+    testArray = np.array(pairTest)
+    datapointsTrain = trainArray[:, :(len(trainArray[0]) - 1)]
+    targetsTrain = trainArray[:, len(trainArray[0]) - 1]
+    datapointsTest = testArray[:, :(len(trainArray[0]) - 1)]
+    targetsTest = testArray[:, len(trainArray[0]) - 1]
 
-    if pairwise:
-        pairTrain, pairTest, l, u = get_pair_dataset(training, test, percentageLabel, pairTarget)
-        set = pairTrain+pairTest
-        dataArray = np.array(set)
-        targets = dataArray[:, len(dataArray[0]) - 1]
-        targets = np.array([1 if y == targets[0] else -1 for y in targets])
+    #transforms the test set
+    datapointsTest = testScaler.transform(datapointsTest)
 
-    else:
-        #here the training and test are already ready
-        l, u = get_l_u(training, percentageLabel)
-        dataArray = np.array(training)
-        targets = dataArray[:, len(dataArray[0]) - 1]
-
-
-    datapoints = dataArray[:, :(len(dataArray[0]) - 1)]
-    datapoints = MinMaxScaler(feature_range=(0, 1)).fit_transform(datapoints)
+    return datapointsTrain[:l], targetsTrain[:l], datapointsTrain[l:l + u], datapointsTest, targetsTest, l, u
 
 
 
-    if pairwise:
-        return datapoints[:l], targets[:l], datapoints[l:l + u], datapoints[l + u:], targets[l + u:], l, u
-    else: return datapoints[:l], targets[:l], datapoints[l:l + u], l, u
+#it gets the prepared training where one label is set to 1 and others to -1
+def get_lagrange_oneVsAll(training, percentageLabel):
 
+    l, u = get_l_u(training, percentageLabel)
+    trainArray = np.array(training)
+    datapointsTrain = trainArray[:, :(len(trainArray[0]) - 1)]
+    targetsTrain = trainArray[:, len(trainArray[0]) - 1]
+
+    return datapointsTrain[:l], targetsTrain[:l], datapointsTrain[l:l + u], l, u
 
 
 

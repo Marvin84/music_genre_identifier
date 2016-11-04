@@ -1,4 +1,5 @@
 from launchAlgorithms import *
+import copy
 import mySeed
 
 if __name__ == "__main__":
@@ -24,15 +25,18 @@ if __name__ == "__main__":
 
         percentageLabel = input("Insert the percentage of labeled data\n")
 
-
-
         # call a function for a specific algorithm
         # remember to chose r
-
         models = {}
-        #models['lagrange'] = launch_lagrange(training, test, percentageLabel, .5, True, [1, 3])
-        #models['qn'] = launch_qn_algorithm(training, test, percentageLabel, .0, True, [1,3])
-        launch_oneVsRest_lagrange(training, test, targets, targetsDic, percentageLabel, .5)
+
+        fitTransformedTraining, trainScaler, testScaler = get_scaleDataset_and_scalers(training, test)
+        models['lagrange'] = launch_lagrange(fitTransformedTraining, test, testScaler, percentageLabel, .5, True, [2, 5])
+
+        fitTransformedTraining, trainScaler, testScaler = get_scaleDataset_and_scalers(training, test)
+        launch_oneVsRest_lagrange(fitTransformedTraining, test, testScaler, targets, targetsDic, percentageLabel, .1)
+        
+        #models['qn'] = launch_qn_algorithm(fitTransformTraining, fitTest, percentageLabel, .0, True, [1,3])
+
 
 
 
