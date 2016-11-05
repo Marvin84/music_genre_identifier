@@ -2,7 +2,6 @@ from __future__ import division
 from sklearn.model_selection import cross_val_score
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn import svm
-from sklearn import metrics
 from manageDataset import *
 from lagrange.lagrangean_s3vm import *
 from qn.qns3vm import *
@@ -90,14 +89,15 @@ def launch_KNN (training, test, crossValid = False):
 def launch_SVM_oneVsone (training, test, kernel, crossValid = False):
 
     xTrain, yTrain, xTest, yTest = get_supervisedAlgorithm_dataset(training, test)
+    best_estimator = get_best_estimator_by_cv(xTrain, yTrain, 3)
     if kernel == 'rbf':
-        model = svm.SVC(kernel='rbf').fit(xTrain, yTrain)
+        model = svm.SVC(C=best_estimator.C, gamma=best_estimator.gamma).fit(xTrain, yTrain)
     elif kernel == 'linear':
-        model = svm.SVC(kernel='linear').fit(xTrain, yTrain)
-    else: model = svm.SVC(kernel='poly', degree=3).fit(xTrain, yTrain)
+        model = svm.SVC(C=best_estimator.C, kernel='linear', gamma=best_estimator.gamma).fit(xTrain, yTrain)
+    else: model = svm.SVC(C=best_estimator.C, kernel='poly', degree=3, gamma=best_estimator.gamma).fit(xTrain, yTrain)
 
     if crossValid:
-        print cross_val_score(model, xTrain, yTrain, cv=10)
+        print kernel, "kernel SVM's score with 10-fold cross validation: ", cross_val_score(model, xTrain, yTrain, cv=10)
 
     else:
         predictions = model.predict(np.array(xTest))

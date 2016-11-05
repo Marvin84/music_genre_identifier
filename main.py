@@ -48,9 +48,9 @@ if __name__ == "__main__":
                     sys.exit()
                 kernelChoice = input("choose the kernel for svm: 1 for rbf, 2 for linear and 3 for poly\n")
                 if (kernelChoice == 1 or kernelChoice == 2 or kernelChoice==3):
-                    if cvChoice == 1:
+                    if kernelChoice == 1:
                         kernel = 'rbf'
-                    elif cvChoice == 2:
+                    elif kernelChoice == 2:
                         kernel = 'linear'
                     else: kernel = 'poly'
                 else:
