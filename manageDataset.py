@@ -60,3 +60,14 @@ def get_qn_dataset(training, test, percentageLabel, pairwise, pairTarget):
     yTest = append_array_to_new_list(yTestArray)
 
     return xTrainL, yTrainL, xTrainU, xTest, yTest
+
+def get_supervisedAlgorithm_dataset (training, test):
+
+    xTrain, yTrain = get_data_target_lists(training)
+    xTest, yTest = get_data_target_lists(test)
+    xTrain = np.array(xTrain)
+    yTrain = np.array(yTrain)
+    xTest = np.array(xTest)
+    yTest = np.array(yTest)
+    return xTrain, yTrain, xTest, yTest
+

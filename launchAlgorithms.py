@@ -1,10 +1,16 @@
 from __future__ import division
+from sklearn.model_selection import cross_val_score
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn import svm
+from sklearn import metrics
 from manageDataset import *
 from lagrange.lagrangean_s3vm import *
 from qn.qns3vm import *
 from qn.examples import *
 import qn.randomGenerator
 import mySeed
+
+
 
 
 
@@ -54,11 +60,11 @@ def launch_oneVsRest_lagrange(training, test, testScaler, targets, targetsDic, p
         maxElement = max(distPointList[i])
         predictions.append(distPointList[i].index(maxElement)+1)
 
-    print get_predition_percentage(predictions, yTest), "percent of predictions were right"
+    print "langrange's right prediction percentage with oneVsRest strategy: ",get_predition_percentage(predictions, yTest)
     return models
 
 
-def launch_qn_algorithm(training, test, percentageLabel, r, pairwise = False, pairTarget = None):
+def launch_qn(training, test, percentageLabel, r, pairwise = False, pairTarget = None):
     xTrainL, yTrainL, xTrainU, xTest, yTest = get_qn_dataset(training, test, percentageLabel, pairwise, pairTarget)
     model = QN_S3VM(xTrainL, yTrainL, xTrainU, qn.randomGenerator.my_random_generator, lam=0.0009765625, lamU=1,
                     kernel_type="RBF", sigma=0.5, estimate_r=r )
@@ -68,6 +74,35 @@ def launch_qn_algorithm(training, test, percentageLabel, r, pairwise = False, pa
     print "Classification error of QN-S3VM: ", error
     return model
 
+def launch_KNN (training, test, crossValid = False):
+
+    xTrain, yTrain, xTest, yTest = get_supervisedAlgorithm_dataset(training, test)
+    model = KNeighborsClassifier().fit(xTrain, yTrain)
+
+    if crossValid:
+        print "KNN's score with 10-fold cross validation: ",cross_val_score(model, xTrain, yTrain, cv=10)
+
+    else:
+        predictions = model.predict(np.array(xTest))
+        print "KNN's right prediction percentage: ", get_predition_percentage(predictions, yTest)
+    return model
+
+def launch_SVM_oneVsone (training, test, kernel, crossValid = False):
+
+    xTrain, yTrain, xTest, yTest = get_supervisedAlgorithm_dataset(training, test)
+    if kernel == 'rbf':
+        model = svm.SVC(kernel='rbf').fit(xTrain, yTrain)
+    elif kernel == 'linear':
+        model = svm.SVC(kernel='linear').fit(xTrain, yTrain)
+    else: model = svm.SVC(kernel='poly', degree=3).fit(xTrain, yTrain)
+
+    if crossValid:
+        print cross_val_score(model, xTrain, yTrain, cv=10)
+
+    else:
+        predictions = model.predict(np.array(xTest))
+        print kernel, "kernel SVM's right prediction percentage with oneVsone strategy: ", get_predition_percentage(predictions, yTest)
+    return model
 
 
 

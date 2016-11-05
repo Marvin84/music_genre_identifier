@@ -1,6 +1,4 @@
 from launchAlgorithms import *
-import copy
-import mySeed
 
 if __name__ == "__main__":
 
@@ -12,7 +10,8 @@ if __name__ == "__main__":
     #targets are the list of numbers associated to the ordered classes
     targetsDic, targets = get_classes(coloumns['class'])
     dataset = string_to_float(switch_label(datasetList, targets))
-    choice = input("Insert 1 if you have a seperate test set, unless 2\n")
+    models = {}
+    choice = input("Insert 1 if you have a seperate test set, otherwise 2\n")
     if (choice == 1 or choice == 2):
         if choice == 1:
             training = dataset
@@ -23,27 +22,47 @@ if __name__ == "__main__":
             percentageTrain = input("Insert percentage of the training set\n")
             training, test = split_dataset(dataset, percentageTrain)
 
-        percentageLabel = input("Insert the percentage of labeled data\n")
+        typeAlgoChoice = input("chose 1 for semi-supervised and 2 for supervised\n")
+        if (typeAlgoChoice == 1 or typeAlgoChoice == 2):
+            if typeAlgoChoice == 1:
+                # call a function for a specific algorithm
+                # remember to chose r
+                percentageLabel = input("Insert the percentage of labeled data\n")
+                fitTransformedTraining, trainScaler, testScaler = get_scaleDataset_and_scalers(training, test)
+                models['lagrangePairwise'] = launch_lagrange(fitTransformedTraining, test, testScaler,
+                                                             percentageLabel, .5, True, [2, 5])
 
-        # call a function for a specific algorithm
-        # remember to chose r
-        models = {}
+                fitTransformedTraining, trainScaler, testScaler = get_scaleDataset_and_scalers(training, test)
+                models['lagrangeOneVsAll'] = launch_oneVsRest_lagrange(fitTransformedTraining, test, testScaler,
+                                                                       targets, targetsDic, percentageLabel, .1)
 
-        fitTransformedTraining, trainScaler, testScaler = get_scaleDataset_and_scalers(training, test)
-        models['lagrangePairwise'] = launch_lagrange(fitTransformedTraining, test, testScaler,
-                                                     percentageLabel, .5, True, [2, 5])
+                models['qn'] = launch_qn(training, test, percentageLabel, .0, True, [2, 5])
+            else:
+                cvChoice = input("Insert 1 you use 10-fold cross validation, otherwise 2\n")
+                if (cvChoice == 1 or cvChoice == 2):
+                    if cvChoice == 1:
+                        crossValid = True
+                    else: crossValid = False
+                else:
+                    "unvalid choice"
+                    sys.exit()
+                kernelChoice = input("choose the kernel for svm: 1 for rbf, 2 for linear and 3 for poly\n")
+                if (kernelChoice == 1 or kernelChoice == 2 or kernelChoice==3):
+                    if cvChoice == 1:
+                        kernel = 'rbf'
+                    elif cvChoice == 2:
+                        kernel = 'linear'
+                    else: kernel = 'poly'
+                else:
+                    "unvalid choice"
+                    sys.exit()
 
-        fitTransformedTraining, trainScaler, testScaler = get_scaleDataset_and_scalers(training, test)
-        models['lagrangeOneVsAll']= launch_oneVsRest_lagrange(fitTransformedTraining, test, testScaler,
-                                                              targets, targetsDic, percentageLabel, .1)
-
-        models['qn'] = launch_qn_algorithm(training, test, percentageLabel, .0, True, [2,5])
-
-
-
-
-
-
-
+                #launch supervised algorithms
+                models['knn'] = launch_KNN(training, test, crossValid)
+                models['svm'] = launch_SVM_oneVsone(training, test, kernel, crossValid)
+        else:
+            "unvalid choice"
+            sys.exit()
     else:
         ("invalid input, please try again")
+        sys.exit()
