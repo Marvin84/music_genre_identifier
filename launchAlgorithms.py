@@ -28,7 +28,7 @@ def launch_lagrange(training, test, testScaler, percentageLabel, r, pairwise = F
     model = lagrangian_s3vm_train(l, u, xTrainL, yTrainL, xTrainU, C=best_estimator.C,
                                  gamma=best_estimator.gamma, kernel=best_estimator.kernel, r=r, rdm = mySeed.rdm)
 
-    if pairwise: print "The score is: ", model.score(xTest,yTest)
+    if pairwise: print "The lagrange's score for pair targets ", pairTarget,  "is: ", model.score(xTest,yTest)
     return model
 
 
@@ -66,8 +66,8 @@ def launch_oneVsRest_lagrange(training, test, testScaler, targets, targetsDic, p
     return models
 
 
-def launch_qn(training, test, percentageLabel, r, pairwise = False, pairTarget = None):
-    xTrainL, yTrainL, xTrainU, xTest, yTest = get_qn_dataset(training, test, percentageLabel, pairwise, pairTarget)
+def launch_qn(training, test, percentageLabel, r, pairTarget = None):
+    xTrainL, yTrainL, xTrainU, xTest, yTest = get_qn_dataset(training, test, percentageLabel, pairTarget)
     model = QN_S3VM(xTrainL, yTrainL, xTrainU, qn.randomGenerator.my_random_generator, lam=0.0009765625, lamU=1,
                     kernel_type="RBF", sigma=0.5, estimate_r=r )
     model.train()

@@ -162,9 +162,10 @@ def binary_targets(dataset, targets):
 
 def get_pair_dataset(training, test, percentageLabel, pairTarget):
 
-    pairTrain = [datapoint for datapoint in training if datapoint[-1] in pairTarget]
+
+    pairTrain = [copy.copy(datapoint) for datapoint in training if datapoint[-1] in pairTarget]
     pairTrain = binary_targets(pairTrain, pairTarget)
-    pairTest = [datapoint for datapoint in test if datapoint[-1] in pairTarget]
+    pairTest = [copy.copy(datapoint) for datapoint in test if datapoint[-1] in pairTarget]
     pairTest = binary_targets(pairTest, pairTarget)
 
     l, u = get_l_u(pairTrain, percentageLabel)
@@ -172,10 +173,12 @@ def get_pair_dataset(training, test, percentageLabel, pairTarget):
     return pairTrain, pairTest, l, u
 
 
+
 # getting the scaled train and test sets and the test scaler
 # training was fit and transformed the test only fit
 def get_scaleDataset_and_scalers(train, test):
     training = copy.copy(train)
+    test = copy.copy(test)
     # instantiate the MinMax instance for training and for test
     mmTrain = MinMaxScaler(feature_range=(0,1))
     mmTest = MinMaxScaler(feature_range=(0,1))
@@ -196,6 +199,9 @@ def get_scaleDataset_and_scalers(train, test):
 def get_predition_percentage(predictions, test):
     n = len([i for i, j in zip(predictions, test) if i == j])
     return (n / len(predictions)) * 100
+
+def get_copy_lists(training, test):
+    return copy.copy(training), copy.copy(test)
 
 
 

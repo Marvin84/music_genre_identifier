@@ -23,8 +23,9 @@ def get_lagrange_pairwise(training, test, testScaler, percentageLabel, pairTarge
 
 
 #it gets the prepared training where one label is set to 1 and others to -1
-def get_lagrange_oneVsAll(training, percentageLabel):
+def get_lagrange_oneVsAll(trainingSet, percentageLabel):
 
+    training = copy.copy(trainingSet)
     l, u = get_l_u(training, percentageLabel)
     trainArray = np.array(training)
     datapointsTrain = trainArray[:, :(len(trainArray[0]) - 1)]
@@ -34,14 +35,15 @@ def get_lagrange_oneVsAll(training, percentageLabel):
 
 
 
-def get_qn_dataset(training, test, percentageLabel, pairwise, pairTarget):
+def get_qn_dataset(training, test, percentageLabel, pairTarget):
 
     #you must have a list of numpy arrays
-    if pairwise:
-        pairTrain, pairTest, l, u = get_pair_dataset(training, test, percentageLabel, pairTarget)
-        trainArray = np.array(pairTrain)
-        testArray = np.array(pairTest)
-    else: print "not pairwise version"
+
+
+    pairTrain, pairTest, l, u = get_pair_dataset(training, test, percentageLabel, pairTarget)
+    trainArray = np.array(pairTrain)
+    testArray = np.array(pairTest)
+
 
     #create arrays for labels qn needs int
     xTrainArrayL = trainArray[:l, :(len(trainArray[0]) - 1)]
@@ -61,6 +63,7 @@ def get_qn_dataset(training, test, percentageLabel, pairwise, pairTarget):
 
     return xTrainL, yTrainL, xTrainU, xTest, yTest
 
+#It can be used for all supervised algorithms and it returns arrays of train and test and relative targets
 def get_supervisedAlgorithm_dataset (training, test):
 
     xTrain, yTrain = get_data_target_lists(training)
