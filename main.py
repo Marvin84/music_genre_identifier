@@ -27,7 +27,7 @@ if __name__ == "__main__":
             if typeAlgoChoice == 1:
                 # call a function for a specific algorithm
                 # remember to chose r
-                #trainingSet, testSet = get_copy_lists(training, test)
+                trainingSet, testSet = get_copy_lists(training, test)
                 percentageLabel = input("Insert the percentage of labeled data\n")
                 fitTransformedTraining, trainScaler, testScaler = get_scaleDataset_and_scalers(trainingSet, testSet)
                 models['lagrangePairwise'] = launch_lagrange(fitTransformedTraining, testSet, testScaler,
