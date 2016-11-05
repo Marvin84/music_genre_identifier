@@ -4,7 +4,7 @@ import numpy as np
 import mySeed
 
 def get_lagrange_pairwise(training, test, testScaler, percentageLabel, pairTarget):
-    #pair target is a list of 2 classes, set None if you are not using pairwise
+    #pair target is a list of 2 classes
     #percentage of labeled datapoints
     #use testScaler for transforming the test set to the valid one
 
