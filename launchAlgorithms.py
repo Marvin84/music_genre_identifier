@@ -2,6 +2,9 @@ from __future__ import division
 from sklearn.model_selection import cross_val_score
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn import svm
+from sklearn.svm import LinearSVC
+from sklearn.multiclass import OneVsRestClassifier
+from sklearn.multiclass import OneVsOneClassifier
 from manageDataset import *
 from lagrange.lagrangean_s3vm import *
 from qn.qns3vm import *
@@ -95,37 +98,37 @@ def launch_SVM_oneVsone (training, test, kernel, crossValid = False):
     elif kernel == 'linear':
         model = svm.SVC(C=best_estimator.C, kernel='linear', gamma=best_estimator.gamma).fit(xTrain, yTrain)
     else: model = svm.SVC(C=best_estimator.C, kernel='poly', degree=3, gamma=best_estimator.gamma).fit(xTrain, yTrain)
-
     if crossValid:
         print kernel, "kernel SVM's score with 10-fold cross validation: ", cross_val_score(model, xTrain, yTrain, cv=10)
-
     else:
         predictions = model.predict(np.array(xTest))
-        print kernel, "kernel SVM's right prediction percentage with oneVsone strategy: ", get_predition_percentage(predictions, yTest)
+        print kernel, "kernel SVM's right prediction percentage with oneVsone strategy: ", \
+            get_predition_percentage(predictions, yTest)
     return model
 
+def launch_SVM_oneVsall (training, test, crossValid = False):
 
+    xTrain, yTrain, xTest, yTest = get_supervisedAlgorithm_dataset(training, test)
+    model = OneVsRestClassifier(LinearSVC(random_state=0)).fit(xTrain, yTrain)
+    predictions = model.predict(np.array(xTest))
+    if crossValid:
+        print "SVM's right prediction percentage with oneVsall strategy and 10-fold cross validation: ", \
+            cross_val_score(model, xTrain, yTrain, cv=10)
+    else:
+        print "SVM's right prediction percentage with oneVsall strategy: ", get_predition_percentage(predictions, yTest)
+    return model
 
+def launch_SVM_oneVsoneLinear(training, test, crossValid = False):
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    xTrain, yTrain, xTest, yTest = get_supervisedAlgorithm_dataset(training, test)
+    model = OneVsOneClassifier(LinearSVC(random_state=0)).fit(xTrain, yTrain)
+    predictions = model.predict(np.array(xTest))
+    if crossValid:
+        print "SVM's right prediction percentage with oneVoneLinear strategy and 10-fold cross validation: ", \
+            cross_val_score(model, xTrain, yTrain, cv=10)
+    else:
+        print "SVM's right prediction percentage with oneVoneLinear strategy: ", get_predition_percentage(predictions, yTest)
+    return model
 
 
 
