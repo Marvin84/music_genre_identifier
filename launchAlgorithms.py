@@ -30,29 +30,24 @@ def launch_oneVsRest_lagrange(training, test, testScaler, targets, targetsDic, p
 
     models = []
     multiclassTraining = get_multiclass_dataset(training, targets, targetsDic)
-
     #testset
     xTest, yTest = get_data_target_lists(test)
     xTestArray = testScaler.transform(np.array(xTest))
     yTestArray = np.array(yTest)
     decisions = []
-
     #training models
     for i in range(len(targets)):
        models.append(launch_lagrange(multiclassTraining[targets[i]], test, testScaler, percentageLabel, r))
     #getting the distances
-
     distPointList = []
     for i in range(len(targets)):
         decisions.append(models[i].decision_function(xTestArray))
-
     #distPointList is a list of lists where every list has the distance from n models of every datapoint
     for i in range(len(decisions[0])):
         distPoint = []
         for j in range(len(decisions)):
          distPoint.append(decisions[j][i])
         distPointList.append(distPoint)
-
     #get the highest distance
     predictions=[]
     for i in range(len(distPointList)):
@@ -61,8 +56,6 @@ def launch_oneVsRest_lagrange(training, test, testScaler, targets, targetsDic, p
 
     print get_predition_percentage(predictions, yTest), "percent of predictions were right"
     return models
-
-
 
 
 def launch_qn_algorithm(training, test, percentageLabel, r, pairwise = False, pairTarget = None):

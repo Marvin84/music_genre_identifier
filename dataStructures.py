@@ -5,7 +5,6 @@ import os
 import csv
 import copy
 import mySeed
-import random
 
 
 #the dataset must be a csv file with first raw containing all attributes
@@ -161,7 +160,6 @@ def binary_targets(dataset, targets):
 
 
 
-
 def get_pair_dataset(training, test, percentageLabel, pairTarget):
 
     pairTrain = [datapoint for datapoint in training if datapoint[-1] in pairTarget]
@@ -172,7 +170,6 @@ def get_pair_dataset(training, test, percentageLabel, pairTarget):
     l, u = get_l_u(pairTrain, percentageLabel)
 
     return pairTrain, pairTest, l, u
-
 
 
 # getting the scaled train and test sets and the test scaler

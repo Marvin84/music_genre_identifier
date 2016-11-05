@@ -22,7 +22,6 @@ def get_lagrange_pairwise(training, test, testScaler, percentageLabel, pairTarge
     return datapointsTrain[:l], targetsTrain[:l], datapointsTrain[l:l + u], datapointsTest, targetsTest, l, u
 
 
-
 #it gets the prepared training where one label is set to 1 and others to -1
 def get_lagrange_oneVsAll(training, percentageLabel):
 
