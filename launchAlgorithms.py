@@ -2,6 +2,8 @@ from __future__ import division
 from sklearn.model_selection import cross_val_score
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn import svm
+from sklearn.svm import LinearSVC
+from sklearn.linear_model import SGDClassifier
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.multiclass import OneVsOneClassifier
 from manageDataset import *
@@ -129,7 +131,7 @@ def launch_SVM_SVC (training, test, kernel, crossValid = False):
 def launch_SVM_oneVsall (training, test, crossValid = False):
 
     xTrain, yTrain, xTest, yTest = get_supervisedAlgorithm_dataset(training, test)
-    best_estimator = get_best_estimator_by_cv(xTrain, yTrain, 3)
+    best_estimator = get_best_estimator_by_cv(xTrain, yTrain, 5)
     model = OneVsRestClassifier(svm.SVC(C=best_estimator.C, kernel='linear', gamma=best_estimator.gamma)).fit(xTrain, yTrain)
     predictions = model.predict(np.array(xTest))
 
@@ -142,10 +144,10 @@ def launch_SVM_oneVsall (training, test, crossValid = False):
 
 
 #using the oneVsOneClassifier of SVM
-def launch_SVM_oneVsoneLinear(training, test, crossValid = False):
+def launch_SVM_oneVsone(training, test, crossValid = False):
 
     xTrain, yTrain, xTest, yTest = get_supervisedAlgorithm_dataset(training, test)
-    best_estimator = get_best_estimator_by_cv(xTrain, yTrain, 3)
+    best_estimator = get_best_estimator_by_cv(xTrain, yTrain, 5)
     model = OneVsOneClassifier(svm.SVC(C=best_estimator.C, kernel='linear', gamma=best_estimator.gamma)).fit(xTrain, yTrain)
     predictions = model.predict(np.array(xTest))
 
@@ -155,6 +157,31 @@ def launch_SVM_oneVsoneLinear(training, test, crossValid = False):
         print "oneVoneClassifier SVM's right prediction percentage: ", get_predition_percentage(predictions, yTest)
     return model
 
+#using the SVCLinear
+def launch_SVCLinear(training, test, crossValid = False):
 
+    xTrain, yTrain, xTest, yTest = get_supervisedAlgorithm_dataset(training, test)
+    best_estimator = get_best_estimator_by_cv(xTrain, yTrain, 5)
+    model = LinearSVC(C=best_estimator.C, random_state=1).fit(xTrain, yTrain)
+    predictions = model.predict(np.array(xTest))
 
+    if crossValid:
+        print "SVCLinear's right prediction percentage and 10-fold cross validation: ", cross_val_score(model, xTrain, yTrain, cv=10)
+    else:
+        print "SVCLinear's right prediction percentage: ", get_predition_percentage(predictions, yTest)
+    return model
 
+#using the stochastic
+def launch_SGDClassifier(training, test, crossValid = False):
+
+    xTrain, yTrain, xTest, yTest = get_supervisedAlgorithm_dataset(training, test)
+    alpha = get_SGDC_best_estimator(xTrain, yTrain)
+    xTrain, xTest = scale_stochastic_dataset(xTrain, xTest)
+    model = SGDClassifier(loss="hinge", penalty="l2", alpha=alpha).fit(xTrain, yTrain)
+    predictions = model.predict(np.array(xTest))
+
+    if crossValid:
+        print "SGDClassifier's right prediction percentage and 10-fold cross validation: ", cross_val_score(model, xTrain, yTrain, cv=10)
+    else:
+        print "SGDClassifier's right prediction percentage: ", get_predition_percentage(predictions, yTest)
+    return model

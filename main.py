@@ -1,5 +1,6 @@
 from launchAlgorithms import *
 
+
 if __name__ == "__main__":
 
     # datasetList is a list of lists of datas,
@@ -59,10 +60,12 @@ if __name__ == "__main__":
                     sys.exit()
 
                 #launch supervised algorithms
-                models['knn'] = launch_KNN(training, test, crossValid)
-                models['svmSVC'] = launch_SVM_SVC(training, test, kernel, crossValid)
-                models['svmOnevsAll'] = launch_SVM_oneVsall(training, test, crossValid)
-                models['svmOnevsOneLinear'] = launch_SVM_oneVsoneLinear(training, test, crossValid)
+                #models['knn'] = launch_KNN(training, test, crossValid)
+                #models['svmSVC'] = launch_SVM_SVC(training, test, kernel, crossValid)
+                #models['svmOnevsAll'] = launch_SVM_oneVsall(training, test, crossValid)
+                #models['svmOnevsOne'] = launch_SVM_oneVsone(training, test, crossValid)
+                #models['SVCLinear'] = launch_SVCLinear(training, test, crossValid)
+                models['SGDC']= launch_SGDClassifier(training, test, crossValid)
         else:
             "unvalid choice"
             sys.exit()

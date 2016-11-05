@@ -1,5 +1,7 @@
 from __future__ import division
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from sklearn.linear_model import Ridge
+from sklearn.grid_search import GridSearchCV
 import numpy as np
 import os
 import csv
@@ -204,7 +206,21 @@ def get_copy_lists(training, test):
     return copy.copy(training), copy.copy(test)
 
 
+def scale_stochastic_dataset(xTrain, xTest):
+    scaler = StandardScaler()
+    scaler.fit(xTrain)
+    xTrain = scaler.transform(xTrain)
+    xTest = scaler.transform(xTest)
 
+    return xTrain, xTest
+
+def get_SGDC_best_estimator(xTrain, yTrain):
+
+    alphas = np.array([1, 0.1, 0.01, 0.001, 0.0001, 0])
+    model = Ridge()
+    grid = GridSearchCV(estimator=model, param_grid=dict(alpha=alphas))
+    grid.fit(xTrain, yTrain)
+    return grid.best_estimator_.alpha
 
 
 
