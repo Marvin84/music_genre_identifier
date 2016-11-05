@@ -59,16 +59,8 @@ def launch_oneVsRest_lagrange(training, test, testScaler, targets, targetsDic, p
         maxElement = max(distPointList[i])
         predictions.append(distPointList[i].index(maxElement)+1)
 
-    n= 0
-    for i in range(len(predictions)):
-        if predictions[i] == yTest[i]:
-            n += 1
-
-    print "classification error is: ", 1 - (n/len(predictions))
-
-
-
-
+    print get_predition_percentage(predictions, yTest), "percent of predictions were right"
+    return models
 
 
 
@@ -83,51 +75,6 @@ def launch_qn_algorithm(training, test, percentageLabel, r, pairwise = False, pa
     print "Classification error of QN-S3VM: ", error
     return model
 
-
-
-
-'''    creating two lists of predictions and real labels
-    targetsNum = get_numbered_classes(targets)
-    #labels = count_labels(yTest, targetsNum)
-    #predictions = []
-
-    #for i in range(len(models)):
-    #   predictions.append(np.count_nonzero(models[i].predict(xTestArray) == 1))
-
-    #print yTestArray
-
-    #classifier.estimators_ = models
-    #classifier.classes_ = targets
-    #classifier.fit(xTrainL, yTrainL)
-    #classifier.label_binarizer_ = False
-    #print classifier.score(xTestArray, yTestArray)
-    print get_numbered_classes(targets)
-    best_estimator = get_best_estimator_by_cv(xTrainL, yTrainL, 3)
-
-    svc = SVC(C = best_estimator.C, gamma = best_estimator.gamma, kernel = best_estimator.kernel)
-    classifier2 = OneVsRestClassifier(svc)
-    #classifier2.estimators_ = models
-    #classifier2.classes_ = get_numbered_classes(targets)
-    classifier2.fit(xTrainArray, yTrainArray)
-    print classifier2.predict(xTestArray)
-    #trainset for the estimator
-    xTrain, yTrain = get_data_target_lists(training)
-    l, u = get_l_u(training, percentageLabel)
-    xTrainL = np.array(xTrain[:l])
-    yTrainL = np.array(yTrain[:l])
-    xTrainArray = np.array(xTrain)
-    yTrainArray = np.array(yTrain)
-            #maxElement = max(distPointList[i])
-        #if maxElement >= 0:
-         #   predictions.append(distPointList[i].index(maxElement)+1)
-        #else: predictions.append(100)
-
-    #n = predictions.count(100)
-    #m = len(predictions) - n
-    #rightPercent = ((np.count_nonzero(np.array(predictions) == yTestArray))/m)*100
-    #print m, np.count_nonzero(np.array(predictions))
-    #print "there are ", n, "undefined and ", rightPercent, "accurary on defined"
-'''
 
 
 

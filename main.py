@@ -29,13 +29,15 @@ if __name__ == "__main__":
         # remember to chose r
         models = {}
 
-        fitTransformedTraining, trainScaler, testScaler = get_scaleDataset_and_scalers(training, test)
-        models['lagrange'] = launch_lagrange(fitTransformedTraining, test, testScaler, percentageLabel, .5, True, [2, 5])
+        #fitTransformedTraining, trainScaler, testScaler = get_scaleDataset_and_scalers(training, test)
+        #models['lagrangePairwise'] = launch_lagrange(fitTransformedTraining, test, testScaler,
+                                                     #percentageLabel, .5, True, [2, 5])
 
-        fitTransformedTraining, trainScaler, testScaler = get_scaleDataset_and_scalers(training, test)
-        launch_oneVsRest_lagrange(fitTransformedTraining, test, testScaler, targets, targetsDic, percentageLabel, .1)
-        
-        #models['qn'] = launch_qn_algorithm(fitTransformTraining, fitTest, percentageLabel, .0, True, [1,3])
+        #fitTransformedTraining, trainScaler, testScaler = get_scaleDataset_and_scalers(training, test)
+        #models['lagrangeOneVsAll']= launch_oneVsRest_lagrange(fitTransformedTraining, test, testScaler,
+                                                              #targets, targetsDic, percentageLabel, .1)
+
+        models['qn'] = launch_qn_algorithm(training, test, percentageLabel, .0, True, [2,5])
 
 
 
