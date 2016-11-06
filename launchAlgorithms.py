@@ -150,9 +150,8 @@ def launch_SVM_oneVsone(training, test, crossValid = False):
     best_estimator = get_best_estimator_by_cv(xTrain, yTrain, 5)
     model = OneVsOneClassifier(svm.SVC(C=best_estimator.C, kernel='linear', gamma=best_estimator.gamma)).fit(xTrain, yTrain)
     predictions = model.predict(np.array(xTest))
-
     if crossValid:
-        print "oneVoneClassifier SVM's right prediction percentage and 10-fold cross validation: ", cross_val_score(model, xTrain, yTrain, cv=10)
+        print "oneVoneClassifier SVM's right prediction percentage and 5-fold cross validation: ", cross_val_score(model, xTrain, yTrain, cv=5)
     else:
         print "oneVoneClassifier SVM's right prediction percentage: ", get_predition_percentage(predictions, yTest)
     return model
@@ -161,10 +160,11 @@ def launch_SVM_oneVsone(training, test, crossValid = False):
 def launch_SVCLinear(training, test, crossValid = False):
 
     xTrain, yTrain, xTest, yTest = get_supervisedAlgorithm_dataset(training, test)
-    best_estimator = get_best_estimator_by_cv(xTrain, yTrain, 5)
-    model = LinearSVC(C=best_estimator.C, random_state=1).fit(xTrain, yTrain)
+    bestEstimator = get_LinearSVC_best_estimator(xTrain, yTrain)
+    #the best estimator with SVC() model is worse!!
+    #bestEstimator = get_best_estimator_by_cv(xTrain, yTrain, 3)
+    model = LinearSVC(C=bestEstimator.C, random_state=1).fit(xTrain, yTrain)
     predictions = model.predict(np.array(xTest))
-
     if crossValid:
         print "SVCLinear's right prediction percentage and 10-fold cross validation: ", cross_val_score(model, xTrain, yTrain, cv=10)
     else:
@@ -175,11 +175,10 @@ def launch_SVCLinear(training, test, crossValid = False):
 def launch_SGDClassifier(training, test, crossValid = False):
 
     xTrain, yTrain, xTest, yTest = get_supervisedAlgorithm_dataset(training, test)
-    alpha = get_SGDC_best_estimator(xTrain, yTrain)
+    bestEstimator = get_SGDC_best_estimator(xTrain, yTrain)
     xTrain, xTest = scale_stochastic_dataset(xTrain, xTest)
-    model = SGDClassifier(loss="hinge", penalty="l2", alpha=alpha).fit(xTrain, yTrain)
+    model = SGDClassifier(loss="hinge", penalty="l2", alpha=bestEstimator.alpha, random_state=42).fit(xTrain, yTrain)
     predictions = model.predict(np.array(xTest))
-
     if crossValid:
         print "SGDClassifier's right prediction percentage and 10-fold cross validation: ", cross_val_score(model, xTrain, yTrain, cv=10)
     else:
