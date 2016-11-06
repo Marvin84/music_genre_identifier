@@ -23,7 +23,7 @@ if __name__ == "__main__":
             percentageTrain = input("Insert percentage of the training set\n")
             training, test = split_dataset(dataset, percentageTrain)
 
-        typeAlgoChoice = input("chose 1 for semi-supervised and 2 for supervised\n")
+        typeAlgoChoice = input("choose 1 for semi-supervised and 2 for supervised\n")
         if (typeAlgoChoice == 1 or typeAlgoChoice == 2):
             if typeAlgoChoice == 1:
                 percentageLabel = input("Insert the percentage of labeled data\n")
