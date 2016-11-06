@@ -93,8 +93,25 @@ def launch_qn(training, test, percentageLabel, r, pairTarget = None):
     model.train()
     preds = model.getPredictions(xTest)
     error = classification_error(preds,yTest)
-    print "Classification error of QN-S3VM: ", error
-    return model
+    return model, error
+
+
+#use the launch_lagrange as subroutine for training evry model, setting pairwise True
+def launch_oneVsone_qn(training, test, targets, percentageLabel, r):
+
+    errors = []
+    for i in range(len(targets)):
+        for j in range(len(targets)):
+            if i!=j:
+                errors.append(launch_qn(training, test, percentageLabel, r, [i+1,j+1])[1])
+            else: pass
+    return reduce(lambda x, y: x + y, errors) / len(errors)
+
+
+#
+#starting with supervised algorithms
+#
+
 
 def launch_KNN (training, test, crossValid = False):
 
@@ -109,8 +126,8 @@ def launch_KNN (training, test, crossValid = False):
         print "KNN's right prediction percentage: ", get_predition_percentage(predictions, yTest)
     return model
 
-def launch_SVM_SVC (training, test, kernel, crossValid = False):
 
+def launch_SVM_SVC (training, test, kernel, crossValid = False):
     #here the multiclass is supported by one vs one
     #gamma must be set only for rbf and poly
     xTrain, yTrain, xTest, yTest = get_supervisedAlgorithm_dataset(training, test)

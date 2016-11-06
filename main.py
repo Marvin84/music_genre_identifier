@@ -45,16 +45,21 @@ if __name__ == "__main__":
                                                                        targets, targetsDic, percentageLabel, .1)
                 print "--------------"
                 trainingSet, testSet = get_copy_lists(training, test)
-                print "qn pairwise evaluation on targets: ", pairTarget
-                models['qn'] = launch_qn(trainingSet, testSet, percentageLabel, .0, pairTarget)
-                print "--------------"
-                trainingSet, testSet = get_copy_lists(training, test)
                 fitTransformedTraining, trainScaler, testScaler = get_scaleDataset_and_scalers(trainingSet, testSet)
                 print "lagrange doing one vs one organized manually"
                 oneVsOneScore = launch_oneVsone_lagrange(fitTransformedTraining, test, testScaler,
                                                          targets, percentageLabel, .5)
                 print "The lagrange's score with one vs one strategy is: ", oneVsOneScore
                 print "--------------"
+                trainingSet, testSet = get_copy_lists(training, test)
+                print "qn pairwise evaluation on targets: ", pairTarget
+                models['qn'], qnError = launch_qn(trainingSet, testSet, percentageLabel, .0, pairTarget)
+                print "Classification error of QN-S3VM: ", qnError
+                print "--------------"
+                trainingSet, testSet = get_copy_lists(training, test)
+                print "Qn doing one vs one organized manually"
+                oneVsOneError = launch_oneVsone_qn(trainingSet, testSet, targets, percentageLabel, .0)
+                print "The qn's average classification error with one vs one strategy is: ", oneVsOneError
 
 
             else:

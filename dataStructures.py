@@ -219,9 +219,3 @@ def get_LinearSVC_best_estimator(xTrain, yTrain):
     grid = GridSearchCV(estimator=model, param_grid=parameters)
     grid.fit(xTrain, yTrain)
     return grid.best_estimator_
-
-
-
-
-
-
