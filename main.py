@@ -31,16 +31,23 @@ if __name__ == "__main__":
                 trainingSet, testSet = get_copy_lists(training, test)
                 percentageLabel = input("Insert the percentage of labeled data\n")
                 fitTransformedTraining, trainScaler, testScaler = get_scaleDataset_and_scalers(trainingSet, testSet)
+                pairTarget = [2, 5]
+                print "lagrange pairwise evaluation on targets: ", pairTarget
                 models['lagrangePairwise'] = launch_lagrange(fitTransformedTraining, testSet, testScaler,
-                                                             percentageLabel, .5, True, [2, 5])
+                                                             percentageLabel, .5, True, pairTarget)
+                print "--------------"
                 trainingSet, testSet = get_copy_lists(training, test)
                 fitTransformedTraining, trainScaler, testScaler = get_scaleDataset_and_scalers(trainingSet, testSet)
+                print "lagrange doing one vs all organized manually"
                 models['lagrangeOneVsAll'] = launch_oneVsRest_lagrange(fitTransformedTraining, testSet, testScaler,
                                                                        targets, targetsDic, percentageLabel, .1)
+                print "--------------"
                 trainingSet, testSet = get_copy_lists(training, test)
-                models['qn'] = launch_qn(trainingSet, testSet, percentageLabel, .0, [2, 5])
+                print "qn pairwise evaluation on targets: ", pairTarget
+                models['qn'] = launch_qn(trainingSet, testSet, percentageLabel, .0, pairTarget)
+
             else:
-                cvChoice = input("Insert 1 you use 10-fold cross validation, otherwise 2\n")
+                cvChoice = input("Insert 1 you use 5-fold cross validation, otherwise 2\n")
                 if (cvChoice == 1 or cvChoice == 2):
                     if cvChoice == 1:
                         crossValid = True
@@ -60,11 +67,22 @@ if __name__ == "__main__":
                     sys.exit()
 
                 #launch supervised algorithms
+                print "Knn evaluation"
                 models['knn'] = launch_KNN(training, test, crossValid)
+                print "--------------"
+                print "SVC svm evaluation with ", kernel, " kernel"
                 models['svmSVC'] = launch_SVM_SVC(training, test, kernel, crossValid)
+                print "--------------"
+                print "OnevsAllClassifier evaluation"
                 models['svmOnevsAll'] = launch_SVM_oneVsall(training, test, crossValid)
+                print "--------------"
+                print "OnevsOneClassifier evaluation"
                 models['svmOnevsOne'] = launch_SVM_oneVsone(training, test, crossValid)
+                print "--------------"
+                print "SVCLinear evaluation"
                 models['SVCLinear'] = launch_SVCLinear(training, test, crossValid)
+                print "--------------"
+                print "SGDCClassifier evaluation"
                 models['SGDC']= launch_SGDClassifier(training, test, crossValid)
         else:
             "unvalid choice"

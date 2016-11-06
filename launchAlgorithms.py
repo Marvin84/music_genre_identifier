@@ -85,7 +85,7 @@ def launch_KNN (training, test, crossValid = False):
     model = KNeighborsClassifier().fit(xTrain, yTrain)
 
     if crossValid:
-        print "KNN's score with 10-fold cross validation: ",cross_val_score(model, xTrain, yTrain, cv=10)
+        print "KNN's score with 5-fold cross validation: ",cross_val_score(model, xTrain, yTrain, cv=5)
 
     else:
         predictions = model.predict(np.array(xTest))
@@ -119,7 +119,7 @@ def launch_SVM_SVC (training, test, kernel, crossValid = False):
     print "percentage of ", kernel, "kernel SVC using onevsRest decision function : ", percentage, "and the score is: ", score
 
     if crossValid:
-        print kernel, "kernel SVM's score with 10-fold cross validation: ", cross_val_score(model, xTrain, yTrain, cv=10)
+        print kernel, "kernel SVM's score with 5-fold cross validation: ", cross_val_score(model, xTrain, yTrain, cv=5)
     else:
         predictions = model.predict(np.array(xTest))
         print kernel, "kernel SVC's right prediction percentage using predict function: ", \
@@ -136,8 +136,8 @@ def launch_SVM_oneVsall (training, test, crossValid = False):
     predictions = model.predict(np.array(xTest))
 
     if crossValid:
-        print "oneVsRestClassifier SVM's right prediction percentage and 10-fold cross validation: ", \
-            cross_val_score(model, xTrain, yTrain, cv=10)
+        print "oneVsRestClassifier SVM's right prediction percentage and 5-fold cross validation: ", \
+            cross_val_score(model, xTrain, yTrain, cv=5)
     else:
         print "oneVsRestClassifier SVM's right prediction percentage: ", get_predition_percentage(predictions, yTest)
     return model
@@ -151,7 +151,8 @@ def launch_SVM_oneVsone(training, test, crossValid = False):
     model = OneVsOneClassifier(svm.SVC(C=best_estimator.C, kernel='linear', gamma=best_estimator.gamma)).fit(xTrain, yTrain)
     predictions = model.predict(np.array(xTest))
     if crossValid:
-        print "oneVoneClassifier SVM's right prediction percentage and 5-fold cross validation: ", cross_val_score(model, xTrain, yTrain, cv=5)
+        print "oneVoneClassifier SVM's right prediction percentage and 5-fold cross validation: ", \
+            cross_val_score(model, xTrain, yTrain, cv=5)
     else:
         print "oneVoneClassifier SVM's right prediction percentage: ", get_predition_percentage(predictions, yTest)
     return model
@@ -166,7 +167,8 @@ def launch_SVCLinear(training, test, crossValid = False):
     model = LinearSVC(C=bestEstimator.C, random_state=1).fit(xTrain, yTrain)
     predictions = model.predict(np.array(xTest))
     if crossValid:
-        print "SVCLinear's right prediction percentage and 10-fold cross validation: ", cross_val_score(model, xTrain, yTrain, cv=10)
+        print "SVCLinear's right prediction percentage and 5-fold cross validation: ", \
+            cross_val_score(model, xTrain, yTrain, cv=5)
     else:
         print "SVCLinear's right prediction percentage: ", get_predition_percentage(predictions, yTest)
     return model
@@ -180,7 +182,8 @@ def launch_SGDClassifier(training, test, crossValid = False):
     model = SGDClassifier(loss="hinge", penalty="l2", alpha=bestEstimator.alpha, random_state=42).fit(xTrain, yTrain)
     predictions = model.predict(np.array(xTest))
     if crossValid:
-        print "SGDClassifier's right prediction percentage and 10-fold cross validation: ", cross_val_score(model, xTrain, yTrain, cv=10)
+        print "SGDClassifier's right prediction percentage and 5-fold cross validation: ", \
+            cross_val_score(model, xTrain, yTrain, cv=5)
     else:
         print "SGDClassifier's right prediction percentage: ", get_predition_percentage(predictions, yTest)
     return model
