@@ -29,23 +29,29 @@ def launch_lagrange(training, test, testScaler, percentageLabel, r, pairwise = F
     model = lagrangian_s3vm_train(l, u, xTrainL, yTrainL, xTrainU, C=best_estimator.C,
                                  gamma=best_estimator.gamma, kernel=best_estimator.kernel, r=r, rdm = mySeed.rdm)
 
-    if pairwise: print "The lagrange's score for pair targets ", pairTarget,  "is: ", model.score(xTest,yTest)
-    return model
+    if pairwise:
+        return model, model.score(xTest,yTest)
+    else: return model
 
 
 
-
+#use the launch_lagrange as subroutine for training evry model, pairwise is with default value False
 def launch_oneVsRest_lagrange(training, test, testScaler, targets, targetsDic, percentageLabel, r):
 
     models = []
     multiclassTraining = get_multiclass_dataset(training, targets, targetsDic)
-    #testset
+
+    #transformation of testset with the pre-calculated test scaler
     xTest, yTest = get_data_target_lists(test)
     xTestArray = testScaler.transform(np.array(xTest))
 
     #training models
     for i in range(len(targets)):
        models.append(launch_lagrange(multiclassTraining[targets[i]], test, testScaler, percentageLabel, r))
+
+    predictions = []
+    for i in range(len(targets)):
+        predictions.append(models[i].predict(xTestArray))
 
     #getting the predicted class by taking the highest value of the decision function
     decisions =[]
@@ -67,6 +73,17 @@ def launch_oneVsRest_lagrange(training, test, testScaler, targets, targetsDic, p
 
     print "langrange's right prediction percentage with oneVsRest strategy: ",get_predition_percentage(predictions, yTest)
     return models
+
+#use the launch_lagrange as subroutine for training evry model, setting pairwise True
+def launch_oneVsone_lagrange(training, test, testScaler, targets, percentageLabel, r):
+
+    scores = []
+    for i in range(len(targets)):
+        for j in range(len(targets)):
+            if i!=j:
+                scores.append(launch_lagrange(training, test, testScaler, percentageLabel, r, True, [i+1,j+1])[1])
+            else: pass
+    return reduce(lambda x, y: x + y, scores) / len(scores)
 
 
 def launch_qn(training, test, percentageLabel, r, pairTarget = None):

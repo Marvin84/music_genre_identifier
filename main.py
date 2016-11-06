@@ -26,15 +26,17 @@ if __name__ == "__main__":
         typeAlgoChoice = input("chose 1 for semi-supervised and 2 for supervised\n")
         if (typeAlgoChoice == 1 or typeAlgoChoice == 2):
             if typeAlgoChoice == 1:
-                # call a function for a specific algorithm
-                # remember to chose r
-                trainingSet, testSet = get_copy_lists(training, test)
                 percentageLabel = input("Insert the percentage of labeled data\n")
+                #call a function for a specific algorithm
+                #remember to chose r
+                #
+                trainingSet, testSet = get_copy_lists(training, test)
                 fitTransformedTraining, trainScaler, testScaler = get_scaleDataset_and_scalers(trainingSet, testSet)
                 pairTarget = [2, 5]
                 print "lagrange pairwise evaluation on targets: ", pairTarget
-                models['lagrangePairwise'] = launch_lagrange(fitTransformedTraining, testSet, testScaler,
+                models['lagrangePairwise'], pairScore = launch_lagrange(fitTransformedTraining, testSet, testScaler,
                                                              percentageLabel, .5, True, pairTarget)
+                print "The lagrange's score for pair targets ", pairTarget, "is: ", pairScore
                 print "--------------"
                 trainingSet, testSet = get_copy_lists(training, test)
                 fitTransformedTraining, trainScaler, testScaler = get_scaleDataset_and_scalers(trainingSet, testSet)
@@ -45,6 +47,15 @@ if __name__ == "__main__":
                 trainingSet, testSet = get_copy_lists(training, test)
                 print "qn pairwise evaluation on targets: ", pairTarget
                 models['qn'] = launch_qn(trainingSet, testSet, percentageLabel, .0, pairTarget)
+                print "--------------"
+                trainingSet, testSet = get_copy_lists(training, test)
+                fitTransformedTraining, trainScaler, testScaler = get_scaleDataset_and_scalers(trainingSet, testSet)
+                print "lagrange doing one vs one organized manually"
+                oneVsOneScore = launch_oneVsone_lagrange(fitTransformedTraining, test, testScaler,
+                                                         targets, percentageLabel, .5)
+                print "The lagrange's score with one vs one strategy is: ", oneVsOneScore
+                print "--------------"
+
 
             else:
                 cvChoice = input("Insert 1 you use 5-fold cross validation, otherwise 2\n")

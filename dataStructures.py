@@ -117,23 +117,6 @@ def  get_classes(classes):
         d[targets[i]] = i+1
     return d, targets
 
-#creates a dictionary where the key is a class and the value is the training set with that label
-#set to 1 and others set to -1
-def get_multiclass_dataset(dataset, targets, targetsDic):
-    #mySeed.rdm.shuffle(dataset)
-    dataDic = {}
-    for i in range(len(targetsDic)):
-        data = []
-        for item in dataset:
-            datapoint = copy.copy(item)
-            if datapoint[-1] == targetsDic[targets[i]]:
-                datapoint[-1] = 1
-            else: datapoint[-1] = -1
-            data.append(datapoint)
-
-            dataDic[targets[i]] = data
-    return dataDic
-
 def get_data_target_lists(dataset):
     xTest = []
     yTest = [int(y[len(dataset[0])-1]) for y in dataset]
@@ -167,7 +150,6 @@ def binary_targets(dataset, targets):
 
 
 def get_pair_dataset(training, test, percentageLabel, pairTarget):
-
 
     pairTrain = [copy.copy(datapoint) for datapoint in training if datapoint[-1] in pairTarget]
     pairTrain = binary_targets(pairTrain, pairTarget)
