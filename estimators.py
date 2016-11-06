@@ -1,5 +1,4 @@
 from sklearn.linear_model import Ridge
-from sklearn import grid_search
 from sklearn.grid_search import GridSearchCV
 from scipy.stats import uniform as sp_rand
 from sklearn.grid_search import RandomizedSearchCV

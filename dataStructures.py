@@ -177,14 +177,8 @@ def get_scaleDataset_and_scalers(train, test):
 
     return training, mmTrain, mmTest
 
-#two lists
-def get_predition_percentage(predictions, test):
-    n = len([i for i, j in zip(predictions, test) if i == j])
-    return (n / len(predictions)) * 100
-
 def get_copy_lists(training, test):
     return copy.copy(training), copy.copy(test)
-
 
 def scale_stochastic_dataset(xTrain, xTest):
     scaler = StandardScaler()

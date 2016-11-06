@@ -5,6 +5,7 @@ from sklearn.svm import LinearSVC
 from sklearn.linear_model import SGDClassifier
 from sklearn.multiclass import OneVsRestClassifier
 from sklearn.multiclass import OneVsOneClassifier
+from sklearn.metrics import accuracy_score
 from manageDataset import *
 from estimators import *
 from lagrange.lagrangean_s3vm import *
@@ -71,7 +72,7 @@ def launch_oneVsRest_lagrange(training, test, testScaler, targets, targetsDic, p
         maxElement = max(distPointList[i])
         predictions.append(distPointList[i].index(maxElement)+1)
 
-    print "langrange's right prediction percentage with oneVsRest strategy: ",get_predition_percentage(predictions, yTest)
+    print "langrange's accurarcy percentage with oneVsRest strategy: ", accuracy_score(predictions, yTest)
     return models
 
 #use the launch_lagrange as subroutine for training evry model, setting pairwise True
@@ -123,7 +124,7 @@ def launch_KNN (training, test, crossValid = False):
 
     else:
         predictions = model.predict(np.array(xTest))
-        print "KNN's right prediction percentage: ", get_predition_percentage(predictions, yTest)
+        print "KNN's accurarcy: ", accuracy_score(predictions, yTest)
     return model
 
 
@@ -147,17 +148,16 @@ def launch_SVM_SVC (training, test, kernel, crossValid = False):
     for item in decisions:
         maxElement = max(item)
         predictionsDec.append(item.index(maxElement)+1)
-
-    percentage = get_predition_percentage(predictionsDec, yTest)
     score = model.score(xTest, yTest)
-    print "percentage of ", kernel, "kernel SVC using onevsRest decision function : ", percentage, "and the score is: ", score
+    print "Accurarcy of ", kernel, "kernel SVC using onevsRest decision function : ",\
+        accuracy_score(predictionsDec, yTest),"and the score is: ", score
 
     if crossValid:
         print kernel, "kernel SVM's score with 5-fold cross validation: ", cross_val_score(model, xTrain, yTrain, cv=5)
     else:
         predictions = model.predict(np.array(xTest))
-        print kernel, "kernel SVC's right prediction percentage using predict function: ", \
-            get_predition_percentage(predictions, yTest)
+        print kernel, "kernel SVC's accurarcy using predict function: ", \
+            accuracy_score(predictions, yTest)
     return model
 
 
@@ -173,7 +173,7 @@ def launch_SVM_oneVsall (training, test, crossValid = False):
         print "oneVsRestClassifier SVM's right prediction percentage and 5-fold cross validation: ", \
             cross_val_score(model, xTrain, yTrain, cv=5)
     else:
-        print "oneVsRestClassifier SVM's right prediction percentage: ", get_predition_percentage(predictions, yTest)
+        print "oneVsRestClassifier SVM's accurarcy: ", accuracy_score(predictions, yTest)
     return model
 
 
@@ -188,7 +188,7 @@ def launch_SVM_oneVsone(training, test, crossValid = False):
         print "oneVoneClassifier SVM's right prediction percentage and 5-fold cross validation: ", \
             cross_val_score(model, xTrain, yTrain, cv=5)
     else:
-        print "oneVoneClassifier SVM's right prediction percentage: ", get_predition_percentage(predictions, yTest)
+        print "oneVoneClassifier SVM's accurarcy: ", accuracy_score(predictions, yTest)
     return model
 
 #using the SVCLinear
@@ -204,7 +204,7 @@ def launch_SVCLinear(training, test, crossValid = False):
         print "SVCLinear's right prediction percentage and 5-fold cross validation: ", \
             cross_val_score(model, xTrain, yTrain, cv=5)
     else:
-        print "SVCLinear's right prediction percentage: ", get_predition_percentage(predictions, yTest)
+        print "SVCLinear's accurarcy: ", accuracy_score(predictions, yTest)
     return model
 
 #using the stochastic
@@ -216,8 +216,8 @@ def launch_SGDClassifier(training, test, crossValid = False):
     model = SGDClassifier(loss="hinge", penalty="l2", alpha=bestEstimator.alpha, random_state=42).fit(xTrain, yTrain)
     predictions = model.predict(np.array(xTest))
     if crossValid:
-        print "SGDClassifier's right prediction percentage and 5-fold cross validation: ", \
+        print "SGDClassifier's accurarcy using 5-fold cross validation: ", \
             cross_val_score(model, xTrain, yTrain, cv=5)
     else:
-        print "SGDClassifier's right prediction percentage: ", get_predition_percentage(predictions, yTest)
+        print "SGDClassifier's accurarcy: ", accuracy_score(predictions, yTest)
     return model
