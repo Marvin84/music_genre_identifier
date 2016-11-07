@@ -8,9 +8,9 @@ from sklearn import svm
 
 def get_SGDC_best_estimator(xTrain, yTrain):
 
-    model = Ridge()
+    model = Ridge(random_state=42)
     parameters = {'alpha': sp_rand()}
-    rdmSearch = RandomizedSearchCV(estimator=model, param_distributions=parameters, n_iter=100)
+    rdmSearch = RandomizedSearchCV(estimator=model, param_distributions=parameters, n_iter=100, random_state=42)
     rdmSearch.fit(xTrain, yTrain)
     #the pre defined alphas is worse!!
     #alphas = np.array([1, 0.1, 0.01, 0.001, 0.0001, 0])
@@ -20,7 +20,7 @@ def get_SGDC_best_estimator(xTrain, yTrain):
 
 def get_LinearSVC_best_estimator(xTrain, yTrain):
 
-    model = svm.LinearSVC()
+    model = svm.SVC(kernel='linear', random_state=42)
     parameters = {'C': (.1, .5, 1.0)}
     grid = GridSearchCV(estimator=model, param_grid=parameters)
     grid.fit(xTrain, yTrain)
