@@ -110,9 +110,8 @@ def launch_oneVsone_qn(training, test, targets, percentageLabel, r):
 
 
 #
-#starting with supervised algorithms
+#starting with supervised algorithm
 #
-
 
 def launch_KNN (training, test, crossValid = False):
 
@@ -136,12 +135,12 @@ def launch_SVM_SVC (training, test, kernel, crossValid = False):
 
     if kernel == 'rbf':
         model = svm.SVC(C=best_estimator.C, decision_function_shape = 'ovr',
-                        gamma=best_estimator.gamma).fit(xTrain, yTrain)
+                        gamma=best_estimator.gamma, random_state=42).fit(xTrain, yTrain)
     elif kernel == 'linear':
         model = svm.SVC(C=best_estimator.C, decision_function_shape = 'ovr',
-                        gamma=best_estimator.gamma, kernel='linear').fit(xTrain, yTrain)
+                        gamma=best_estimator.gamma, kernel='linear',random_state=42).fit(xTrain, yTrain)
     else: model = svm.SVC(C=best_estimator.C, decision_function_shape = 'ovr',
-                          kernel='poly', degree=3, gamma=best_estimator.gamma).fit(xTrain, yTrain)
+                          kernel='poly', degree=3, gamma=best_estimator.gamma, random_state=42).fit(xTrain, yTrain)
 
     predictionsDec = []
     decisions = model.decision_function(xTest).tolist()
@@ -166,7 +165,7 @@ def launch_SVM_oneVsall (training, test, crossValid = False):
 
     xTrain, yTrain, xTest, yTest = get_supervisedAlgorithm_dataset(training, test)
     best_estimator = get_best_estimator_by_cv(xTrain, yTrain, 5)
-    model = OneVsRestClassifier(svm.SVC(C=best_estimator.C, kernel='linear', gamma=best_estimator.gamma)).fit(xTrain, yTrain)
+    model = OneVsRestClassifier(svm.SVC(C=best_estimator.C, kernel='linear', gamma=best_estimator.gamma, random_state=42)).fit(xTrain, yTrain)
     predictions = model.predict(np.array(xTest))
 
     if crossValid:
@@ -182,7 +181,7 @@ def launch_SVM_oneVsone(training, test, crossValid = False):
 
     xTrain, yTrain, xTest, yTest = get_supervisedAlgorithm_dataset(training, test)
     best_estimator = get_best_estimator_by_cv(xTrain, yTrain, 5)
-    model = OneVsOneClassifier(svm.SVC(C=best_estimator.C, kernel='linear', gamma=best_estimator.gamma)).fit(xTrain, yTrain)
+    model = OneVsOneClassifier(svm.SVC(C=best_estimator.C, kernel='linear', gamma=best_estimator.gamma, random_state=42)).fit(xTrain, yTrain)
     predictions = model.predict(np.array(xTest))
     if crossValid:
         print "oneVoneClassifier SVM's right prediction percentage and 5-fold cross validation: ", \
@@ -198,7 +197,7 @@ def launch_SVCLinear(training, test, crossValid = False):
     bestEstimator = get_LinearSVC_best_estimator(xTrain, yTrain)
     #the best estimator with SVC() model is worse!!
     #bestEstimator = get_best_estimator_by_cv(xTrain, yTrain, 3)
-    model = LinearSVC(C=bestEstimator.C, random_state=1).fit(xTrain, yTrain)
+    model = LinearSVC(C=bestEstimator.C, random_state=42).fit(xTrain, yTrain)
     predictions = model.predict(np.array(xTest))
     if crossValid:
         print "SVCLinear's right prediction percentage and 5-fold cross validation: ", \

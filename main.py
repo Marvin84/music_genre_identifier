@@ -17,7 +17,7 @@ if __name__ == "__main__":
         if choice == 1:
             training = dataset
             filename = input("insert the path to test set")
-            test, attributes, coloumns = read_file('/dataset.csv')
+            test, testAttributes, testColoumns = read_file('/dataset.csv')
 
         else:
             percentageTrain = input("Insert percentage of the training set\n")
@@ -32,7 +32,7 @@ if __name__ == "__main__":
                 #
                 trainingSet, testSet = get_copy_lists(training, test)
                 fitTransformedTraining, trainScaler, testScaler = get_scaleDataset_and_scalers(trainingSet, testSet)
-                pairTarget = [2, 5]
+                pairTarget = [2, 4]
                 print "lagrange pairwise evaluation on targets: ", pairTarget
                 models['lagrangePairwise'], pairScore = launch_lagrange(fitTransformedTraining, testSet, testScaler,
                                                              percentageLabel, .5, True, pairTarget)
