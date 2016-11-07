@@ -173,9 +173,10 @@ def get_scaleDataset_and_scalers(train, test):
     training = trainArray.tolist()
     for item in training:
         item[-1] = int(item[-1])
-
-
     return training, mmTrain, mmTest
+
+def get_average(scores):
+    return reduce(lambda x, y: x + y, scores) / len(scores)
 
 def get_copy_lists(training, test):
     return copy.copy(training), copy.copy(test)
