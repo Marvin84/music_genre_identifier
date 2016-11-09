@@ -83,23 +83,31 @@ if __name__ == "__main__":
                     sys.exit()
 
                 #launch supervised algorithms
-                print "Knn evaluation"
-                models['knn'] = launch_KNN(training, test, crossValid)
+                #print "Knn evaluation"
+                trainingSet, testSet = get_copy_lists(training, test)
+                fitTransformedTraining, trainScaler, testScaler = get_scaleDataset_and_scalers(trainingSet, testSet)
+                models['knn'] = launch_KNN(fitTransformedTraining, test, testScaler, crossValid)
                 print "--------------"
                 print "SVC svm evaluation with ", kernel, " kernel"
-                models['svmSVC'] = launch_SVM_SVC(training, test, kernel, crossValid)
+                trainingSet, testSet = get_copy_lists(training, test)
+                models['svmSVC'] = launch_SVM_SVC(trainingSet, testSet, trainScaler, kernel, crossValid)
                 print "--------------"
                 print "OnevsAllClassifier evaluation"
-                models['svmOnevsAll'] = launch_SVM_oneVsall(training, test, crossValid)
+                trainingSet, testSet = get_copy_lists(training, test)
+                models['svmOnevsAll'] = launch_SVM_oneVsall(trainingSet, testSet, crossValid)
                 print "--------------"
                 print "OnevsOneClassifier evaluation"
-                models['svmOnevsOne'] = launch_SVM_oneVsone(training, test, crossValid)
+                trainingSet, testSet = get_copy_lists(training, test)
+                models['svmOnevsOne'] = launch_SVM_oneVsone(trainingSet, testSet, crossValid)
                 print "--------------"
                 print "SVCLinear evaluation"
-                models['SVCLinear'] = launch_SVCLinear(training, test, crossValid)
+                trainingSet, testSet = get_copy_lists(training, test)
+                fitTransformedTraining, trainScaler, testScaler = standard_scale_dataset(trainingSet, testSet)
+                models['SVCLinear'] = launch_SVCLinear(fitTransformedTraining, testSet, testScaler, crossValid)
                 print "--------------"
                 print "SGDCClassifier evaluation"
-                models['SGDC']= launch_SGDClassifier(training, test, crossValid)
+                trainingSet, testSet = get_copy_lists(training, test)
+                models['SGDC']= launch_SGDClassifier(trainingSet, testSet, testScaler, crossValid)
         else:
             "unvalid choice"
             sys.exit()

@@ -142,7 +142,7 @@ def binary_targets(dataset, targets):
     return binaryDataset
 
 
-
+#this is used only when you have set 2 targets to use
 def get_pair_dataset(training, test, percentageLabel, pairTarget):
 
     pairTrain = [copy.copy(datapoint) for datapoint in training if datapoint[-1] in pairTarget]
@@ -158,9 +158,8 @@ def get_pair_dataset(training, test, percentageLabel, pairTarget):
 
 # getting the scaled train and test sets and the test scaler
 # training was fit and transformed the test only fit
-def get_scaleDataset_and_scalers(train, test):
-    training = copy.copy(train)
-    test = copy.copy(test)
+def get_scaleDataset_and_scalers(training, test):
+
     # instantiate the MinMax instance for training and for test
     mmTrain = MinMaxScaler(feature_range=(0,1))
     mmTest = MinMaxScaler(feature_range=(0,1))
@@ -175,11 +174,28 @@ def get_scaleDataset_and_scalers(train, test):
         item[-1] = int(item[-1])
     return training, mmTrain, mmTest
 
+#can be used with any list
 def get_average(scores):
     return reduce(lambda x, y: x + y, scores) / len(scores)
 
 def get_copy_lists(training, test):
     return copy.copy(training), copy.copy(test)
+
+def standard_scale_dataset(training, test):
+
+    mmTrain = StandardScaler()
+    mmTest = StandardScaler()
+    trainArray = np.array(training)
+    testArray = np.array(test)
+    trainData, trainTarget = trainArray[:, :(len(trainArray[0]) - 1)], trainArray[:, len(trainArray[0]) - 1]
+    mmTrain.fit(trainData)
+    trainData = mmTrain.transform(trainData)
+    mmTest.fit(testArray[:, :(len(testArray[0]) - 1)])
+    trainArray = np.c_[trainData, trainTarget]
+    training = trainArray.tolist()
+    for item in training:
+        item[-1] = int(item[-1])
+    return training, mmTrain, mmTest
 
 def scale_stochastic_dataset(xTrain, xTest):
     scaler = StandardScaler()

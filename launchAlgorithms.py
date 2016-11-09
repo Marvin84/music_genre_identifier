@@ -113,35 +113,36 @@ def launch_oneVsone_qn(training, test, targets, percentageLabel, r):
 #starting with supervised algorithm
 #
 
-def launch_KNN (training, test, crossValid = False):
+def launch_KNN (training, test, testScaler, crossValid = False):
 
     xTrain, yTrain, xTest, yTest = get_supervisedAlgorithm_dataset(training, test)
-    model = KNeighborsClassifier().fit(xTrain, yTrain)
+    model = KNeighborsClassifier(n_neighbors=7).fit(xTrain, yTrain)
+    xTestArray = testScaler.transform(np.array(xTest))
 
     if crossValid:
         print "KNN's score with 5-fold cross validation: ",\
             get_average(cross_val_score(model, xTrain, yTrain, cv=5))
 
     else:
-        predictions = model.predict(np.array(xTest))
-        print "KNN's accuracy: ", accuracy_score(predictions, yTest)
+        predictions = model.predict(xTestArray)
+        print "KNN's accuracy: ", accuracy_score(predictions, np.array(yTest))
     return model
 
 
-def launch_SVM_SVC (training, test, kernel, crossValid = False):
+def launch_SVM_SVC (training, test, testScaler, kernel, crossValid = False):
     #here the multiclass is supported by one vs one
     #gamma must be set only for rbf and poly
     xTrain, yTrain, xTest, yTest = get_supervisedAlgorithm_dataset(training, test)
-    best_estimator = get_best_estimator_by_cv(xTrain, yTrain, 5)
+    bestEstimator = get_LinearSVC_best_estimator(xTrain, yTrain)
 
     if kernel == 'rbf':
-        model = svm.SVC(C=best_estimator.C, decision_function_shape = 'ovr',
-                        gamma=best_estimator.gamma, random_state=42).fit(xTrain, yTrain)
+        model = svm.SVC(C=bestEstimator.C, decision_function_shape = 'ovr',
+                        gamma=bestEstimator.gamma, random_state=42).fit(xTrain, yTrain)
     elif kernel == 'linear':
-        model = svm.SVC(C=best_estimator.C, decision_function_shape = 'ovr',
-                        gamma=best_estimator.gamma, kernel='linear',random_state=42).fit(xTrain, yTrain)
-    else: model = svm.SVC(C=best_estimator.C, decision_function_shape = 'ovr',
-                          kernel='poly', degree=4, gamma=best_estimator.gamma, random_state=42).fit(xTrain, yTrain)
+        model = svm.SVC(C=bestEstimator.C, decision_function_shape = 'ovr',
+                        gamma=bestEstimator.gamma, kernel='linear',random_state=42).fit(xTrain, yTrain)
+    else: model = svm.SVC(C=bestEstimator.C, decision_function_shape = 'ovr',
+                          kernel='poly', degree=4, gamma=bestEstimator.gamma, random_state=42).fit(xTrain, yTrain)
 
     predictionsDec = []
     decisions = model.decision_function(xTest).tolist()
@@ -158,67 +159,72 @@ def launch_SVM_SVC (training, test, kernel, crossValid = False):
     else:
         predictions = model.predict(np.array(xTest))
         print kernel, "kernel SVC's accuracy using predict function: ", \
-            accuracy_score(predictions, yTest)
+            accuracy_score(predictions, np.array(yTest))
     return model
 
 
 #using the oneVsRestClassifier of SVM
-def launch_SVM_oneVsall (training, test, crossValid = False):
+def launch_SVM_oneVsall (training, test, testScaler, crossValid = False):
 
     xTrain, yTrain, xTest, yTest = get_supervisedAlgorithm_dataset(training, test)
     best_estimator = get_best_estimator_by_cv(xTrain, yTrain, 5)
     model = OneVsRestClassifier(svm.SVC(C=best_estimator.C, kernel='poly', degree=4, gamma=best_estimator.gamma, random_state=42)).fit(xTrain, yTrain)
-    predictions = model.predict(np.array(xTest))
 
     if crossValid:
         print "oneVsRestClassifier SVM's right prediction percentage and 5-fold cross validation: ", \
             get_average(cross_val_score(model, xTrain, yTrain, cv=5))
     else:
+        predictions = model.predict(np.array(xTest))
         print "oneVsRestClassifier SVM's accuracy: ", accuracy_score(predictions, yTest)
     return model
 
 
 #using the oneVsOneClassifier of SVM
-def launch_SVM_oneVsone(training, test, crossValid = False):
+def launch_SVM_oneVsone(training, test, testScaler, crossValid = False):
 
     xTrain, yTrain, xTest, yTest = get_supervisedAlgorithm_dataset(training, test)
     best_estimator = get_best_estimator_by_cv(xTrain, yTrain, 5)
     model = OneVsOneClassifier(svm.SVC(C=best_estimator.C, kernel='poly', degree=4, gamma=best_estimator.gamma, random_state=42)).fit(xTrain, yTrain)
-    predictions = model.predict(np.array(xTest))
     if crossValid:
         print "oneVoneClassifier SVM's right prediction percentage and 5-fold cross validation: ", \
             get_average(cross_val_score(model, xTrain, yTrain, cv=5))
     else:
-        print "oneVoneClassifier SVM's accurary: ", accuracy_score(predictions, yTest)
+        predictions = model.predict(np.array(xTest))
+        print "oneVoneClassifier SVM's accurary: ", accuracy_score(predictions, np.array(yTest))
     return model
 
 #using the SVCLinear
-def launch_SVCLinear(training, test, crossValid = False):
+def launch_SVCLinear(training, test, testScaler, crossValid = False):
 
     xTrain, yTrain, xTest, yTest = get_supervisedAlgorithm_dataset(training, test)
     bestEstimator = get_LinearSVC_best_estimator(xTrain, yTrain)
-    #the best estimator with SVC() model is worse!!
-    #bestEstimator = get_best_estimator_by_cv(xTrain, yTrain, 3)
+    xTestArray = testScaler.transform(np.array(xTest))
     model = LinearSVC(C=bestEstimator.C, random_state=42).fit(xTrain, yTrain)
-    predictions = model.predict(np.array(xTest))
     if crossValid:
         print "SVCLinear's right prediction percentage and 5-fold cross validation: ", \
             get_average(cross_val_score(model, xTrain, yTrain, cv=5))
     else:
+        predictions = model.predict(xTestArray)
         print "SVCLinear's accurary: ", accuracy_score(predictions, yTest)
     return model
 
 #using the stochastic
-def launch_SGDClassifier(training, test, crossValid = False):
+def launch_SGDClassifier(training, test, testScaler, crossValid = False):
 
     xTrain, yTrain, xTest, yTest = get_supervisedAlgorithm_dataset(training, test)
     bestEstimator = get_SGDC_best_estimator(xTrain, yTrain)
-    xTrain, xTest = scale_stochastic_dataset(xTrain, xTest)
+    #see what happens when you fit and transform together :)
+    #xTrain, xTest = scale_stochastic_dataset(xTrain, xTest)
+    fitTransformedTraining, trainScaler, testScaler = standard_scale_dataset(training, test)
+    xTrain, yTrain, xTest, yTest = get_supervisedAlgorithm_dataset(fitTransformedTraining, test)
     model = SGDClassifier(loss="hinge", penalty="l2", alpha=bestEstimator.alpha, random_state=42).fit(xTrain, yTrain)
-    predictions = model.predict(np.array(xTest))
+
     if crossValid:
         print "SGDClassifier's accurary using 5-fold cross validation: ", \
             get_average(cross_val_score(model, xTrain, yTrain, cv=5))
     else:
-        print "SGDClassifier's accuracy: ", accuracy_score(predictions, yTest)
+        testScaler.fit(xTest)
+        xTest = testScaler.transform(xTest)
+        predictions = model.predict(xTest)
+        print "SGDClassifier's accuracy: ", accuracy_score(predictions, np.array(yTest))
     return model
