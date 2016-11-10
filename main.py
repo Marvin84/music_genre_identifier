@@ -31,24 +31,24 @@ if __name__ == "__main__":
                 #remember to chose r
                 #
                 trainingSet, testSet = get_copy_lists(training, test)
-                fitTransformedTraining, trainScaler, testScaler = get_scaleDataset_and_scalers(trainingSet, testSet)
+                fitTransformedTraining, scaler= get_minmax_scaled_dataset_and_scaler(trainingSet, testSet)
                 pairTarget = [2, 4]
                 print "lagrange pairwise evaluation on targets: ", pairTarget
-                models['lagrangePairwise'], pairScore = launch_lagrange(fitTransformedTraining, testSet, testScaler,
+                models['lagrangePairwise'], pairScore = launch_lagrange(fitTransformedTraining, testSet, scaler,
                                                              percentageLabel, .5, True, pairTarget)
                 print "The lagrange's score for pair targets ", pairTarget, "is: ", pairScore
                 print "--------------"
                 trainingSet, testSet = get_copy_lists(training, test)
-                fitTransformedTraining, trainScaler, testScaler = get_scaleDataset_and_scalers(trainingSet, testSet)
+                fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler(trainingSet, testSet)
                 print "lagrange doing one vs all organized manually"
-                models['lagrangeOneVsAll'] = launch_oneVsRest_lagrange(fitTransformedTraining, testSet, testScaler,
+                models['lagrangeOneVsAll'] = launch_oneVsRest_lagrange(fitTransformedTraining, testSet, scaler,
                                                                        targets, targetsDic, percentageLabel, .1)
                 print "--------------"
                 trainingSet, testSet = get_copy_lists(training, test)
-                fitTransformedTraining, trainScaler, testScaler = get_scaleDataset_and_scalers(trainingSet, testSet)
+                fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler(trainingSet, testSet)
                 print "lagrange doing one vs one organized manually"
-                oneVsOneScore = launch_oneVsone_lagrange(fitTransformedTraining, test, testScaler,
-                                                         targets, percentageLabel, .5)
+                oneVsOneScore = launch_oneVsone_lagrange(fitTransformedTraining, test, scaler,
+                                                         targets, percentageLabel, .1)
                 print "The lagrange's score with one vs one strategy is: ", oneVsOneScore
                 print "--------------"
                 trainingSet, testSet = get_copy_lists(training, test)
@@ -85,12 +85,12 @@ if __name__ == "__main__":
                 #launch supervised algorithms
                 #print "Knn evaluation"
                 trainingSet, testSet = get_copy_lists(training, test)
-                fitTransformedTraining, trainScaler, testScaler = get_scaleDataset_and_scalers(trainingSet, testSet)
-                models['knn'] = launch_KNN(fitTransformedTraining, test, testScaler, crossValid)
+                fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler(trainingSet, testSet)
+                models['knn'] = launch_KNN(fitTransformedTraining, test, scaler, crossValid)
                 print "--------------"
                 print "SVC svm evaluation with ", kernel, " kernel"
                 trainingSet, testSet = get_copy_lists(training, test)
-                models['svmSVC'] = launch_SVM_SVC(trainingSet, testSet, trainScaler, kernel, crossValid)
+                models['svmSVC'] = launch_SVM_SVC(trainingSet, testSet, kernel, crossValid)
                 print "--------------"
                 print "OnevsAllClassifier evaluation"
                 trainingSet, testSet = get_copy_lists(training, test)
@@ -102,12 +102,12 @@ if __name__ == "__main__":
                 print "--------------"
                 print "SVCLinear evaluation"
                 trainingSet, testSet = get_copy_lists(training, test)
-                fitTransformedTraining, trainScaler, testScaler = standard_scale_dataset(trainingSet, testSet)
-                models['SVCLinear'] = launch_SVCLinear(fitTransformedTraining, testSet, testScaler, crossValid)
+                fitTransformedTraining, scaler = standard_scale_dataset(trainingSet, testSet)
+                models['SVCLinear'] = launch_SVCLinear(fitTransformedTraining, testSet, scaler, crossValid)
                 print "--------------"
                 print "SGDCClassifier evaluation"
                 trainingSet, testSet = get_copy_lists(training, test)
-                models['SGDC']= launch_SGDClassifier(trainingSet, testSet, testScaler, crossValid)
+                models['SGDC']= launch_SGDClassifier(trainingSet, testSet, crossValid)
         else:
             "unvalid choice"
             sys.exit()

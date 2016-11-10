@@ -129,7 +129,7 @@ def launch_KNN (training, test, testScaler, crossValid = False):
     return model
 
 
-def launch_SVM_SVC (training, test, testScaler, kernel, crossValid = False):
+def launch_SVM_SVC (training, test, kernel, crossValid = False):
     #here the multiclass is supported by one vs one
     #gamma must be set only for rbf and poly
     xTrain, yTrain, xTest, yTest = get_supervisedAlgorithm_dataset(training, test)
@@ -164,7 +164,7 @@ def launch_SVM_SVC (training, test, testScaler, kernel, crossValid = False):
 
 
 #using the oneVsRestClassifier of SVM
-def launch_SVM_oneVsall (training, test, testScaler, crossValid = False):
+def launch_SVM_oneVsall (training, test, crossValid = False):
 
     xTrain, yTrain, xTest, yTest = get_supervisedAlgorithm_dataset(training, test)
     best_estimator = get_best_estimator_by_cv(xTrain, yTrain, 5)
@@ -180,7 +180,7 @@ def launch_SVM_oneVsall (training, test, testScaler, crossValid = False):
 
 
 #using the oneVsOneClassifier of SVM
-def launch_SVM_oneVsone(training, test, testScaler, crossValid = False):
+def launch_SVM_oneVsone(training, test, crossValid = False):
 
     xTrain, yTrain, xTest, yTest = get_supervisedAlgorithm_dataset(training, test)
     best_estimator = get_best_estimator_by_cv(xTrain, yTrain, 5)
@@ -209,13 +209,13 @@ def launch_SVCLinear(training, test, testScaler, crossValid = False):
     return model
 
 #using the stochastic
-def launch_SGDClassifier(training, test, testScaler, crossValid = False):
+def launch_SGDClassifier(training, test, crossValid = False):
 
     xTrain, yTrain, xTest, yTest = get_supervisedAlgorithm_dataset(training, test)
     bestEstimator = get_SGDC_best_estimator(xTrain, yTrain)
     #see what happens when you fit and transform together :)
     #xTrain, xTest = scale_stochastic_dataset(xTrain, xTest)
-    fitTransformedTraining, trainScaler, testScaler = standard_scale_dataset(training, test)
+    fitTransformedTraining, testScaler = standard_scale_dataset(training, test)
     xTrain, yTrain, xTest, yTest = get_supervisedAlgorithm_dataset(fitTransformedTraining, test)
     model = SGDClassifier(loss="hinge", penalty="l2", alpha=bestEstimator.alpha, random_state=42).fit(xTrain, yTrain)
 
@@ -223,7 +223,6 @@ def launch_SGDClassifier(training, test, testScaler, crossValid = False):
         print "SGDClassifier's accurary using 5-fold cross validation: ", \
             get_average(cross_val_score(model, xTrain, yTrain, cv=5))
     else:
-        testScaler.fit(xTest)
         xTest = testScaler.transform(xTest)
         predictions = model.predict(xTest)
         print "SGDClassifier's accuracy: ", accuracy_score(predictions, np.array(yTest))
