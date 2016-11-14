@@ -1,6 +1,4 @@
 from __future__ import division
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
-import numpy as np
 import os
 import csv
 import copy
@@ -149,30 +147,9 @@ def get_pair_dataset(training, test, percentageLabel, pairTarget):
     pairTrain = binary_targets(pairTrain, pairTarget)
     pairTest = [copy.copy(datapoint) for datapoint in test if datapoint[-1] in pairTarget]
     pairTest = binary_targets(pairTest, pairTarget)
-
     l, u = get_l_u(pairTrain, percentageLabel)
-
     return pairTrain, pairTest, l, u
 
-
-
-# getting the scaled train and test sets and the test scaler
-# training was fit and transformed the test only fit
-def get_scaleDataset_and_scalers(training, test):
-
-    # instantiate the MinMax instance for training and for test
-    mmTrain = MinMaxScaler(feature_range=(0,1))
-    mmTest = MinMaxScaler(feature_range=(0,1))
-    trainArray = np.array(training)
-    testArray = np.array(test)
-    trainData, trainTarget = trainArray[:, :(len(trainArray[0]) - 1)], trainArray[:, len(trainArray[0]) - 1]
-    trainData = mmTrain.fit_transform(trainData)
-    mmTest.fit(testArray[:, :(len(testArray[0]) - 1)])
-    trainArray = np.c_[trainData, trainTarget]
-    training = trainArray.tolist()
-    for item in training:
-        item[-1] = int(item[-1])
-    return training, mmTrain, mmTest
 
 #can be used with any list
 def get_average(scores):
@@ -181,26 +158,3 @@ def get_average(scores):
 def get_copy_lists(training, test):
     return copy.copy(training), copy.copy(test)
 
-def standard_scale_dataset(training, test):
-
-    mmTrain = StandardScaler()
-    mmTest = StandardScaler()
-    trainArray = np.array(training)
-    testArray = np.array(test)
-    trainData, trainTarget = trainArray[:, :(len(trainArray[0]) - 1)], trainArray[:, len(trainArray[0]) - 1]
-    mmTrain.fit(trainData)
-    trainData = mmTrain.transform(trainData)
-    mmTest.fit(testArray[:, :(len(testArray[0]) - 1)])
-    trainArray = np.c_[trainData, trainTarget]
-    training = trainArray.tolist()
-    for item in training:
-        item[-1] = int(item[-1])
-    return training, mmTrain, mmTest
-
-def scale_stochastic_dataset(xTrain, xTest):
-    scaler = StandardScaler()
-    scaler.fit(xTrain)
-    xTrain = scaler.transform(xTrain)
-    xTest = scaler.transform(xTest)
-
-    return xTrain, xTest

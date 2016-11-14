@@ -7,6 +7,7 @@ from sklearn.multiclass import OneVsRestClassifier
 from sklearn.multiclass import OneVsOneClassifier
 from sklearn.metrics import accuracy_score
 from manageDataset import *
+from utilities import *
 from estimators import *
 from lagrange.lagrangean_s3vm import *
 from qn.qns3vm import *
@@ -115,7 +116,7 @@ def launch_oneVsone_qn(training, test, targets, percentageLabel, r):
 
 def launch_KNN (training, test, testScaler, crossValid = False):
 
-    xTrain, yTrain, xTest, yTest = get_supervisedAlgorithm_dataset(training, test)
+    xTrain, yTrain, xTest, yTest = get_supervised_dataset(training, test)
     model = KNeighborsClassifier(n_neighbors=7).fit(xTrain, yTrain)
     xTestArray = testScaler.transform(np.array(xTest))
 
@@ -132,7 +133,7 @@ def launch_KNN (training, test, testScaler, crossValid = False):
 def launch_SVM_SVC (training, test, kernel, crossValid = False):
     #here the multiclass is supported by one vs one
     #gamma must be set only for rbf and poly
-    xTrain, yTrain, xTest, yTest = get_supervisedAlgorithm_dataset(training, test)
+    xTrain, yTrain, xTest, yTest = get_supervised_dataset(training, test)
     bestEstimator = get_LinearSVC_best_estimator(xTrain, yTrain)
 
     if kernel == 'rbf':
@@ -166,7 +167,7 @@ def launch_SVM_SVC (training, test, kernel, crossValid = False):
 #using the oneVsRestClassifier of SVM
 def launch_SVM_oneVsall (training, test, crossValid = False):
 
-    xTrain, yTrain, xTest, yTest = get_supervisedAlgorithm_dataset(training, test)
+    xTrain, yTrain, xTest, yTest = get_supervised_dataset(training, test)
     best_estimator = get_best_estimator_by_cv(xTrain, yTrain, 5)
     model = OneVsRestClassifier(svm.SVC(C=best_estimator.C, kernel='poly', degree=4, gamma=best_estimator.gamma, random_state=42)).fit(xTrain, yTrain)
 
@@ -182,7 +183,7 @@ def launch_SVM_oneVsall (training, test, crossValid = False):
 #using the oneVsOneClassifier of SVM
 def launch_SVM_oneVsone(training, test, crossValid = False):
 
-    xTrain, yTrain, xTest, yTest = get_supervisedAlgorithm_dataset(training, test)
+    xTrain, yTrain, xTest, yTest = get_supervised_dataset(training, test)
     best_estimator = get_best_estimator_by_cv(xTrain, yTrain, 5)
     model = OneVsOneClassifier(svm.SVC(C=best_estimator.C, kernel='poly', degree=4, gamma=best_estimator.gamma, random_state=42)).fit(xTrain, yTrain)
     if crossValid:
@@ -196,7 +197,7 @@ def launch_SVM_oneVsone(training, test, crossValid = False):
 #using the SVCLinear
 def launch_SVCLinear(training, test, testScaler, crossValid = False):
 
-    xTrain, yTrain, xTest, yTest = get_supervisedAlgorithm_dataset(training, test)
+    xTrain, yTrain, xTest, yTest = get_supervised_dataset(training, test)
     bestEstimator = get_LinearSVC_best_estimator(xTrain, yTrain)
     xTestArray = testScaler.transform(np.array(xTest))
     model = LinearSVC(C=bestEstimator.C, random_state=42).fit(xTrain, yTrain)
@@ -211,12 +212,12 @@ def launch_SVCLinear(training, test, testScaler, crossValid = False):
 #using the stochastic
 def launch_SGDClassifier(training, test, crossValid = False):
 
-    xTrain, yTrain, xTest, yTest = get_supervisedAlgorithm_dataset(training, test)
+    xTrain, yTrain, xTest, yTest = get_supervised_dataset(training, test)
     bestEstimator = get_SGDC_best_estimator(xTrain, yTrain)
     #see what happens when you fit and transform together :)
     #xTrain, xTest = scale_stochastic_dataset(xTrain, xTest)
-    fitTransformedTraining, testScaler = standard_scale_dataset(training, test)
-    xTrain, yTrain, xTest, yTest = get_supervisedAlgorithm_dataset(fitTransformedTraining, test)
+    fitTransformedTraining, testScaler = standard_scale_dataset (training)
+    xTrain, yTrain, xTest, yTest = get_supervised_dataset(fitTransformedTraining, test)
     model = SGDClassifier(loss="hinge", penalty="l2", alpha=bestEstimator.alpha, random_state=42).fit(xTrain, yTrain)
 
     if crossValid:
@@ -227,3 +228,6 @@ def launch_SGDClassifier(training, test, crossValid = False):
         predictions = model.predict(xTest)
         print "SGDClassifier's accuracy: ", accuracy_score(predictions, np.array(yTest))
     return model
+
+
+

@@ -1,7 +1,9 @@
 from launchAlgorithms import *
+from utilities import *
 
 
 if __name__ == "__main__":
+
 
     # datasetList is a list of lists of datas,
     # attributes is the first line
@@ -31,7 +33,7 @@ if __name__ == "__main__":
                 #remember to chose r
                 #
                 trainingSet, testSet = get_copy_lists(training, test)
-                fitTransformedTraining, scaler= get_minmax_scaled_dataset_and_scaler(trainingSet, testSet)
+                fitTransformedTraining, scaler= get_minmax_scaled_dataset_and_scaler(trainingSet)
                 pairTarget = [2, 4]
                 print "lagrange pairwise evaluation on targets: ", pairTarget
                 models['lagrangePairwise'], pairScore = launch_lagrange(fitTransformedTraining, testSet, scaler,
@@ -39,13 +41,13 @@ if __name__ == "__main__":
                 print "The lagrange's score for pair targets ", pairTarget, "is: ", pairScore
                 print "--------------"
                 trainingSet, testSet = get_copy_lists(training, test)
-                fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler(trainingSet, testSet)
+                fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler(trainingSet)
                 print "lagrange doing one vs all organized manually"
                 models['lagrangeOneVsAll'] = launch_oneVsRest_lagrange(fitTransformedTraining, testSet, scaler,
                                                                        targets, targetsDic, percentageLabel, .1)
                 print "--------------"
                 trainingSet, testSet = get_copy_lists(training, test)
-                fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler(trainingSet, testSet)
+                fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler(trainingSet)
                 print "lagrange doing one vs one organized manually"
                 oneVsOneScore = launch_oneVsone_lagrange(fitTransformedTraining, test, scaler,
                                                          targets, percentageLabel, .1)
@@ -85,7 +87,7 @@ if __name__ == "__main__":
                 #launch supervised algorithms
                 #print "Knn evaluation"
                 trainingSet, testSet = get_copy_lists(training, test)
-                fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler(trainingSet, testSet)
+                fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler(trainingSet)
                 models['knn'] = launch_KNN(fitTransformedTraining, test, scaler, crossValid)
                 print "--------------"
                 print "SVC svm evaluation with ", kernel, " kernel"
@@ -102,7 +104,7 @@ if __name__ == "__main__":
                 print "--------------"
                 print "SVCLinear evaluation"
                 trainingSet, testSet = get_copy_lists(training, test)
-                fitTransformedTraining, scaler = standard_scale_dataset(trainingSet, testSet)
+                fitTransformedTraining, scaler = standard_scale_dataset(trainingSet)
                 models['SVCLinear'] = launch_SVCLinear(fitTransformedTraining, testSet, scaler, crossValid)
                 print "--------------"
                 print "SGDCClassifier evaluation"

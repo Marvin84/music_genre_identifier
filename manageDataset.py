@@ -58,7 +58,7 @@ def get_qn_dataset(training, test, percentageLabel, pairTarget):
     return xTrainL, yTrainL, xTrainU, xTest, yTest
 
 #It can be used for all supervised algorithms and it returns arrays of train and test and relative targets
-def get_supervisedAlgorithm_dataset (training, test):
+def get_supervised_dataset (training, test):
 
     xTrain, yTrain = get_data_target_lists(training)
     xTest, yTest = get_data_target_lists(test)
@@ -84,5 +84,4 @@ def get_multiclass_dataset(dataset, targets, targetsDic):
 
             dataDic[targets[i]] = data
     return dataDic
-
 
