@@ -73,13 +73,11 @@ if __name__ == "__main__":
                 else:
                     "unvalid choice"
                     sys.exit()
-                kernelChoice = input("choose the kernel for svm: 1 for rbf, 2 for linear and 3 for poly\n")
+                kernelChoice = input("choose the kernel for svm: 1 for rbf, 2 for linear\n")
                 if (kernelChoice == 1 or kernelChoice == 2 or kernelChoice==3):
                     if kernelChoice == 1:
                         kernel = 'rbf'
-                    elif kernelChoice == 2:
-                        kernel = 'linear'
-                    else: kernel = 'poly'
+                    else: kernel = 'linear'
                 else:
                     "unvalid choice"
                     sys.exit()
@@ -92,15 +90,18 @@ if __name__ == "__main__":
                 print "--------------"
                 print "SVC svm evaluation with ", kernel, " kernel"
                 trainingSet, testSet = get_copy_lists(training, test)
-                models['svmSVC'] = launch_SVM_SVC(trainingSet, testSet, kernel, crossValid)
+                fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler(trainingSet)
+                models['svmSVC'] = launch_SVM_SVC(fitTransformedTraining, testSet, scaler, kernel, crossValid)
                 print "--------------"
                 print "OnevsAllClassifier evaluation"
                 trainingSet, testSet = get_copy_lists(training, test)
-                models['svmOnevsAll'] = launch_SVM_oneVsall(trainingSet, testSet, crossValid)
+                fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler(trainingSet)
+                models['svmOnevsAll'] = launch_SVM_oneVsall(fitTransformedTraining, testSet, scaler, crossValid)
                 print "--------------"
                 print "OnevsOneClassifier evaluation"
                 trainingSet, testSet = get_copy_lists(training, test)
-                models['svmOnevsOne'] = launch_SVM_oneVsone(trainingSet, testSet, crossValid)
+                fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler(trainingSet)
+                models['svmOnevsOne'] = launch_SVM_oneVsone(fitTransformedTraining, testSet, scaler, crossValid)
                 print "--------------"
                 print "SVCLinear evaluation"
                 trainingSet, testSet = get_copy_lists(training, test)
