@@ -65,7 +65,7 @@ if __name__ == "__main__":
 
 
             else:
-                cvChoice = input("Insert 1 you use 5-fold cross validation, otherwise 2\n")
+                cvChoice = input("Insert 1 if you want to do 10-fold cross validation on training set and 2 otherwise\n")
                 if (cvChoice == 1 or cvChoice == 2):
                     if cvChoice == 1:
                         crossValid = True

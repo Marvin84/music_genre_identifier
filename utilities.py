@@ -1,5 +1,6 @@
 import numpy as np
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from sklearn.decomposition import PCA
 
 
 def get_minibatches(X,y,mb_size=20):
@@ -51,3 +52,14 @@ def get_minmax_scaled_dataset_and_scaler(training):
     for item in training:
         item[-1] = int(item[-1])
     return training, scaler
+
+def get_LDA (training):
+
+    trainArray = np.array(training)
+    xTrain = trainArray[:, :(len(trainArray[0]) - 1)]
+    yTrain = trainArray[:, len(trainArray[0]) - 1]
+    myPCA = PCA()
+    xTrain = myPCA.fit_transform(xTrain, yTrain)
+    return np.c_[xTrain, yTrain]
+
+

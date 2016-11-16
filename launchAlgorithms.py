@@ -121,12 +121,10 @@ def launch_KNN (training, test, testScaler, crossValid = False):
     xTestArray = testScaler.transform(np.array(xTest))
 
     if crossValid:
-        print "KNN's score with 5-fold cross validation: ",\
-            get_average(cross_val_score(model, xTrain, yTrain, cv=5))
-
-    else:
-        predictions = model.predict(xTestArray)
-        print "KNN's accuracy: ", accuracy_score(predictions, np.array(yTest))
+        print "KNN's 10-fold cross validation score on training set: ", \
+            get_average(cross_val_score(model, xTrain, yTrain, cv=10))
+    predictions = model.predict(xTestArray)
+    print "KNN's accuracy: ", accuracy_score(predictions, np.array(yTest))
     return model
 
 
@@ -137,10 +135,10 @@ def launch_SVM_SVC (training, test, testScaler, kernel, crossValid = False):
     bestEstimator = get_best_estimator_by_cv (xTrain, yTrain, 10)
 
     if kernel == 'rbf':
-        model = svm.SVC(C=bestEstimator.C, decision_function_shape = 'ovr',
+        model = svm.SVC(C=bestEstimator.C, decision_function_shape = 'ovo',
                         gamma=bestEstimator.gamma, random_state=42).fit(xTrain, yTrain)
     elif kernel == 'linear':
-        model = svm.SVC(C=bestEstimator.C, decision_function_shape = 'ovr',
+        model = svm.SVC(C=bestEstimator.C, decision_function_shape = 'ovo',
                         kernel='linear',random_state=42).fit(xTrain, yTrain)
     else: 'unvalid value for kernel'
 
@@ -154,13 +152,11 @@ def launch_SVM_SVC (training, test, testScaler, kernel, crossValid = False):
     #    accuracy_score(predictionsDec, yTest),"and the score is: ", score
 
     if crossValid:
-        print kernel, "kernel SVM's score with 5-fold cross validation: ",\
-            get_average(cross_val_score(model, xTrain, yTrain, cv=5))
-    else:
-        xTest = testScaler.transform(xTest)
-        predictions = model.predict(xTest)
-        print kernel, "kernel SVC's accuracy using predict function: ", \
-            accuracy_score(predictions, yTest)
+        print kernel, "kernel SVM with 10-fold cross validation on training set: ",\
+            get_average(cross_val_score(model, xTrain, yTrain, cv=10))
+    xTest = testScaler.transform(xTest)
+    predictions = model.predict(xTest)
+    print kernel, "kernel SVC's accuracy using predict function: ", accuracy_score(predictions, yTest)
     return model
 
 
@@ -172,12 +168,11 @@ def launch_SVM_oneVsall (training, test, testScaler, crossValid = False):
     model = OneVsRestClassifier(svm.SVC(C=bestEstimator.C, kernel='rbf', random_state=42)).fit(xTrain, yTrain)
 
     if crossValid:
-        print "oneVsRestClassifier SVM's right prediction percentage and 5-fold cross validation: ", \
-            get_average(cross_val_score(model, xTrain, yTrain, cv=5))
-    else:
-        xTest = testScaler.transform(xTest)
-        predictions = model.predict(np.array(xTest))
-        print "oneVsRestClassifier SVM's accuracy: ", accuracy_score(predictions, yTest)
+        print "oneVsRestClassifier SVM 10-fold cross validation on training set: ", \
+            get_average(cross_val_score(model, xTrain, yTrain, cv=10))
+    xTest = testScaler.transform(xTest)
+    predictions = model.predict(np.array(xTest))
+    print "oneVsRestClassifier SVM's accuracy: ", accuracy_score(predictions, yTest)
     return model
 
 
@@ -188,12 +183,11 @@ def launch_SVM_oneVsone(training, test, testScaler, crossValid = False):
     bestEstimator = get_best_estimator_by_cv(xTrain, yTrain, 10)
     model = OneVsOneClassifier(svm.SVC(C=bestEstimator.C, kernel='rbf', random_state=42)).fit(xTrain, yTrain)
     if crossValid:
-        print "oneVoneClassifier SVM's right prediction percentage and 5-fold cross validation: ", \
-            get_average(cross_val_score(model, xTrain, yTrain, cv=5))
-    else:
-        xTest = testScaler.transform(xTest)
-        predictions = model.predict(np.array(xTest))
-        print "oneVoneClassifier SVM's accurary: ", accuracy_score(predictions, np.array(yTest))
+        print "oneVoneClassifier SVM 10-fold cross validation on training set: ", \
+            get_average(cross_val_score(model, xTrain, yTrain, cv=10))
+    xTest = testScaler.transform(xTest)
+    predictions = model.predict(np.array(xTest))
+    print "oneVoneClassifier SVM's accurary: ", accuracy_score(predictions, np.array(yTest))
     return model
 
 #using the SVCLinear
@@ -204,11 +198,10 @@ def launch_SVCLinear(training, test, testScaler, crossValid = False):
     xTestArray = testScaler.transform(np.array(xTest))
     model = LinearSVC(C=bestEstimator.C, random_state=42).fit(xTrain, yTrain)
     if crossValid:
-        print "SVCLinear's right prediction percentage and 5-fold cross validation: ", \
-            get_average(cross_val_score(model, xTrain, yTrain, cv=5))
-    else:
-        predictions = model.predict(xTestArray)
-        print "SVCLinear's accurary: ", accuracy_score(predictions, yTest)
+        print "SVCLinear 10-fold cross validation on training set: ", \
+            get_average(cross_val_score(model, xTrain, yTrain, cv=10))
+    predictions = model.predict(xTestArray)
+    print "SVCLinear's accurary: ", accuracy_score(predictions, yTest)
     return model
 
 #using the stochastic
@@ -223,12 +216,11 @@ def launch_SGDClassifier(training, test, crossValid = False):
     model = SGDClassifier(loss="hinge", penalty="l2", alpha=bestEstimator.alpha, random_state=42).fit(xTrain, yTrain)
 
     if crossValid:
-        print "SGDClassifier's accurary using 5-fold cross validation: ", \
-            get_average(cross_val_score(model, xTrain, yTrain, cv=5))
-    else:
-        xTest = testScaler.transform(xTest)
-        predictions = model.predict(xTest)
-        print "SGDClassifier's accuracy: ", accuracy_score(predictions, np.array(yTest))
+        print "SGDClassifier 10-fold cross validation on training set: ", \
+            get_average(cross_val_score(model, xTrain, yTrain, cv=10))
+    xTest = testScaler.transform(xTest)
+    predictions = model.predict(xTest)
+    print "SGDClassifier's accuracy: ", accuracy_score(predictions, np.array(yTest))
     return model
 
 
