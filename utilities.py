@@ -42,7 +42,7 @@ def scale_stochastic_dataset(xTrain, xTest):
 def get_minmax_scaled_dataset_and_scaler(training):
 
     # instantiate the MinMax instance for training and for test
-    scaler = MinMaxScaler(feature_range=(0,1))
+    scaler = MinMaxScaler(feature_range=(-1,1))
     trainArray = np.array(training)
     trainData, trainTarget = trainArray[:, :(len(trainArray[0]) - 1)], trainArray[:, len(trainArray[0]) - 1]
     scaler.fit(trainData)
@@ -61,5 +61,6 @@ def get_LDA (training):
     myPCA = PCA()
     xTrain = myPCA.fit_transform(xTrain, yTrain)
     return np.c_[xTrain, yTrain]
+
 
 

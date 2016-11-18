@@ -84,6 +84,11 @@ if __name__ == "__main__":
 
                 #launch supervised algorithms
                 #print "Knn evaluation"
+                print "Gradient Boost Classifier evaluation"
+                trainingSet, testSet = get_copy_lists(training, test)
+                fitTransformedTraining, scaler = standard_scale_dataset(trainingSet)
+                models['GBC']= launch_gradientBoost(fitTransformedTraining, testSet, scaler, crossValid)
+                print "--------------"
                 trainingSet, testSet = get_copy_lists(training, test)
                 fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler(trainingSet)
                 models['knn'] = launch_KNN(fitTransformedTraining, test, scaler, crossValid)
@@ -105,12 +110,16 @@ if __name__ == "__main__":
                 print "--------------"
                 print "SVCLinear evaluation"
                 trainingSet, testSet = get_copy_lists(training, test)
-                fitTransformedTraining, scaler = standard_scale_dataset(trainingSet)
+                fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler(trainingSet)
                 models['SVCLinear'] = launch_SVCLinear(fitTransformedTraining, testSet, scaler, crossValid)
                 print "--------------"
                 print "SGDCClassifier evaluation"
                 trainingSet, testSet = get_copy_lists(training, test)
-                models['SGDC']= launch_SGDClassifier(trainingSet, testSet, crossValid)
+                fitTransformedTraining, scaler = standard_scale_dataset(trainingSet)
+                models['SGDC']= launch_SGDClassifier(fitTransformedTraining, testSet, scaler, crossValid)
+                print "--------------"
+
+
         else:
             "unvalid choice"
             sys.exit()

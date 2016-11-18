@@ -158,3 +158,10 @@ def get_average(scores):
 def get_copy_lists(training, test):
     return copy.copy(training), copy.copy(test)
 
+def add_fist_row(dataset):
+
+    firstRaw = range(len(dataset)-1)
+    firstRaw.append('class')
+    dataset.insert(0, firstRaw)
+    return dataset
+
