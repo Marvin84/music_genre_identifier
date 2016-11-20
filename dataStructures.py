@@ -8,30 +8,36 @@ import mySeed
 #the dataset must be a csv file with first raw containing all attributes
 #the class attribute like the last attribute of the raw
 def read_file(filename):
- #create a set of tuples which contain the raws
- with open(os.path.dirname(os.path.abspath(__file__)) + filename) as file:
-  datalist=[list(line) for line in csv.reader(file)]
-  #created the tuples without the first raw which contains the attributes
-  attributes = datalist[0]
-  del datalist[0]
- #creates a dictionary with 'key:values' where key is the attribute and value its relatives values
- with open(os.path.dirname(os.path.abspath(__file__)) + filename, 'r') as csvin:
-  reader=csv.DictReader(csvin)
-  coloumns={k:[v] for k,v in reader.next().items()}
-  datadomain={k:[v] for k,v in reader.next().items()}
-  for line in reader:
-   for k,v in line.items():
-    coloumns[k].append(v)
-    if v not in datadomain[k]:
-     datadomain[k].append(v)
- return datalist, attributes, coloumns
+    #create a set of tuples which contain the raws
+    with open(os.path.dirname(os.path.abspath(__file__)) + '/'+ filename) as file:
+        datalist=[list(line) for line in csv.reader(file)]
+        #created the tuples without the first raw which contains the attributes
+        attributes = datalist[0]
+        dictionary = get_dictionary_from_dataset(filename)
+        del datalist[0]
+        return datalist, attributes, dictionary
+
+
+def get_dictionary_from_dataset(filename):
+    #creates a dictionary with 'key:values' where key is the attribute and value its relatives values
+    with open(os.path.dirname(os.path.abspath(__file__)) + '/'+ filename, 'r') as csvin:
+        reader=csv.DictReader(csvin)
+        coloumns={k:[v] for k,v in reader.next().items()}
+        for line in reader:
+            for k,v in line.items():
+                coloumns[k].append(v)
+    return coloumns
+
+
+
+
 
 #return a list with all targets
 def unrepeated_values(list):
     unique = []
     for item in list:
-     if item not in unique:
-      unique.append(item)
+        if item not in unique:
+            unique.append(item)
     return unique
 
 #creates a new dataset where the class attribute is replaced with
@@ -52,10 +58,10 @@ def switch_label(dataset, classes):
 
 #convert a list of lists of strings to float
 def string_to_float(dataset):
- dataset = [[float(item) for item in raws] for raws in dataset]
- for item in dataset:
-     item[-1] = int(item[-1])
- return dataset
+    dataset = [[float(item) for item in raws] for raws in dataset]
+    for item in dataset:
+        item[-1] = int(item[-1])
+    return dataset
 
 #creates a csv file named filename from a list
 def get_csv(dataset, filename):
@@ -164,4 +170,21 @@ def add_fist_row(dataset):
     firstRaw.append('class')
     dataset.insert(0, firstRaw)
     return dataset
+
+
+
+def get_beat_features_csv(dictionary):
+
+    beat = []
+    first = dictionary['69']
+    second = dictionary['70']
+
+    for i in range(len(first)):
+        datapoint = []
+        datapoint.append(first[i])
+        datapoint.append(second[i])
+        beat.append(datapoint)
+
+    get_csv(beat, 'beat')
+
 

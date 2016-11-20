@@ -7,6 +7,7 @@ from sklearn.multiclass import OneVsRestClassifier
 from sklearn.multiclass import OneVsOneClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.ensemble import ExtraTreesClassifier
 from manageDataset import *
 from utilities import *
 from estimators import *
@@ -137,10 +138,10 @@ def launch_SVM_SVC (training, test, testScaler, kernel, crossValid = False):
 
     if kernel == 'rbf':
         model = svm.SVC(C=bestEstimator.C, decision_function_shape = 'ovo',
-                        gamma=bestEstimator.gamma, random_state=42).fit(xTrain, yTrain)
+                        gamma=bestEstimator.gamma, random_state=42, verbose=False).fit(xTrain, yTrain)
     elif kernel == 'linear':
         model = svm.SVC(C=bestEstimator.C, decision_function_shape = 'ovo',
-                        kernel='linear', random_state=42).fit(xTrain, yTrain)
+                        kernel='linear', random_state=42, verbose=False).fit(xTrain, yTrain)
     else: 'unvalid value for kernel'
 
     predictionsDec = []
@@ -229,12 +230,12 @@ def launch_gradientBoost (training, test, testScaler, crossValid):
 
     xTrain, yTrain, xTest, yTest = get_supervised_dataset(training, test)
     model = GradientBoostingClassifier(criterion='friedman_mse', init=None,
-              learning_rate=0.391036905286, loss='deviance', max_depth=4,
+              learning_rate=0.0829819533259, loss='deviance', max_depth=4,
               max_features='sqrt', max_leaf_nodes=None,
-              min_impurity_split=1e-07, min_samples_leaf=17,
+              min_impurity_split=1e-07, min_samples_leaf=1,
               min_samples_split=2, min_weight_fraction_leaf=0.0,
-              n_estimators=173, presort='auto', random_state=2,
-              subsample=0.606362580994, verbose=0, warm_start=False).fit(xTrain, yTrain)
+              n_estimators=946, presort='auto', random_state=4,
+              subsample=1.0, verbose=0, warm_start=False).fit(xTrain, yTrain)
 
     if crossValid:
         print "gradientBoost 10-fold cross validation on training set: ", \
@@ -245,12 +246,39 @@ def launch_gradientBoost (training, test, testScaler, crossValid):
     return model
 
 
+def launch_extraTrees (training, test, testScaler, crossValid):
+
+    xTrain, yTrain, xTest, yTest = get_supervised_dataset(training, test)
+    model = ExtraTreesClassifier(bootstrap=True, class_weight=None, criterion='entropy',
+           max_depth=None, max_features=0.667097169797,
+           max_leaf_nodes=None, min_impurity_split=1e-07,
+           min_samples_leaf=5, min_samples_split=2,
+           min_weight_fraction_leaf=0.0, n_estimators=364, n_jobs=1,
+           oob_score=False, random_state=3, verbose=False,
+           warm_start=False).fit(xTrain, yTrain)
+
+    if crossValid:
+        print "gradientBoost 10-fold cross validation on training set: ", \
+            get_average(cross_val_score(model, xTrain, yTrain, cv=10))
+    xTest = testScaler.transform(xTest)
+    predictions = model.predict(xTest)
+    print "ExtraTrees's accuracy: ", accuracy_score(predictions, np.array(yTest))*100
+    return model
+
 def get_best_model(xTrain, yTrain):
-    model = svm.SVC(C=8222.93532239, cache_size=512, class_weight=None,
-               coef0=0.00661700030606, decision_function_shape=None, degree=2.0,
-               gamma=0.00145895607089, kernel='poly', max_iter=19561979.0,
-               probability=False, random_state=2, shrinking=True, tol=4.68908299219e-05,
-               verbose=False)
+    model = SVC(C=96959.5216309, cache_size=512, class_weight=None, coef0=0.0,
+        decision_function_shape=None, degree=1, gamma=0.188129827352,
+        kernel='rbf', max_iter=599598507.0, probability=False, random_state=0,
+        shrinking=False, tol=0.00873620944293, verbose=False)
+    #model = svm.SVC(C=156.419002877, cache_size=512, class_weight=None, coef0=0.0,
+    #    decision_function_shape=None, degree=1, gamma='auto', kernel='linear',
+    #    max_iter=22073714.0, probability=False, random_state=3, shrinking=True,
+    #    tol=0.000212752230313, verbose=False)
+    #model = SVC(C=68.1615839242, cache_size=512, class_weight=None, coef0=1081.71929367,
+    #    decision_function_shape=None, degree=5.0, gamma=109.368508147,
+    #    kernel='poly', max_iter=285102549.0, probability=False, random_state=4,
+    #    shrinking=False, tol=0.000970574688949, verbose=False)
+
     model.fit(xTrain, yTrain)
     return model
 

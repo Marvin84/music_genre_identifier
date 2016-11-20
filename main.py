@@ -8,11 +8,12 @@ if __name__ == "__main__":
     # datasetList is a list of lists of datas,
     # attributes is the first line
     # coloumns are the coloumns of vlaues refered to attributes
-    datasetList, attributes, coloumns = read_file('/dataset.csv')
+    datasetList, attributes, coloumns = read_file('dataset.csv')
     # extract dictionary of classes orederd alphabetically and associated with a number
     #targets are the list of numbers associated to the ordered classes
     targetsDic, targets = get_classes(coloumns['class'])
     dataset = string_to_float(switch_label(datasetList, targets))
+
     models = {}
     choice = input("Insert 1 if you have a seperate test set, otherwise 2\n")
     if (choice == 1 or choice == 2):
@@ -84,14 +85,21 @@ if __name__ == "__main__":
 
                 #launch supervised algorithms
                 #print "Knn evaluation"
+
+
                 print "Gradient Boost Classifier evaluation"
                 trainingSet, testSet = get_copy_lists(training, test)
-                fitTransformedTraining, scaler = standard_scale_dataset(trainingSet)
-                models['GBC']= launch_gradientBoost(fitTransformedTraining, testSet, scaler, crossValid)
+                fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler(trainingSet)
+                #models['GBC']= launch_gradientBoost(fitTransformedTraining, testSet, scaler, crossValid)
+                print "--------------"
+                print "Extra Trees Classifier evaluation"
+                trainingSet, testSet = get_copy_lists(training, test)
+                fitTransformedTraining, scaler = standard_scale_dataset (trainingSet)
+                #models['ETC'] = launch_extraTrees(fitTransformedTraining, testSet, scaler, crossValid)
                 print "--------------"
                 trainingSet, testSet = get_copy_lists(training, test)
-                fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler(trainingSet)
-                models['knn'] = launch_KNN(fitTransformedTraining, test, scaler, crossValid)
+                fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler (trainingSet)
+                #models['knn'] = launch_KNN(fitTransformedTraining, test, scaler, crossValid)
                 print "--------------"
                 print "SVC svm evaluation with ", kernel, " kernel"
                 trainingSet, testSet = get_copy_lists(training, test)
@@ -115,7 +123,7 @@ if __name__ == "__main__":
                 print "--------------"
                 print "SGDCClassifier evaluation"
                 trainingSet, testSet = get_copy_lists(training, test)
-                fitTransformedTraining, scaler = standard_scale_dataset(trainingSet)
+                fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler(trainingSet)
                 models['SGDC']= launch_SGDClassifier(fitTransformedTraining, testSet, scaler, crossValid)
                 print "--------------"
 

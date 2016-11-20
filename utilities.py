@@ -17,7 +17,7 @@ def get_minibatches(X,y,mb_size=20):
 
 def standard_scale_dataset(training):
 
-    scaler = StandardScaler()
+    scaler = StandardScaler(copy=True, with_mean=False, with_std=False)
     trainArray = np.array(training)
     trainData, trainTarget = trainArray[:, :(len(trainArray[0]) - 1)], trainArray[:, len(trainArray[0]) - 1]
     scaler.fit(trainData)
