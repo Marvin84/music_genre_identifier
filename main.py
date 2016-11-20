@@ -90,16 +90,16 @@ if __name__ == "__main__":
                 print "Gradient Boost Classifier evaluation"
                 trainingSet, testSet = get_copy_lists(training, test)
                 fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler(trainingSet)
-                #models['GBC']= launch_gradientBoost(fitTransformedTraining, testSet, scaler, crossValid)
+                models['GBC']= launch_gradientBoost(fitTransformedTraining, testSet, scaler, crossValid)
                 print "--------------"
                 print "Extra Trees Classifier evaluation"
                 trainingSet, testSet = get_copy_lists(training, test)
                 fitTransformedTraining, scaler = standard_scale_dataset (trainingSet)
-                #models['ETC'] = launch_extraTrees(fitTransformedTraining, testSet, scaler, crossValid)
+                models['ETC'] = launch_extraTrees(fitTransformedTraining, testSet, scaler, crossValid)
                 print "--------------"
                 trainingSet, testSet = get_copy_lists(training, test)
                 fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler (trainingSet)
-                #models['knn'] = launch_KNN(fitTransformedTraining, test, scaler, crossValid)
+                models['knn'] = launch_KNN(fitTransformedTraining, test, scaler, crossValid)
                 print "--------------"
                 print "SVC svm evaluation with ", kernel, " kernel"
                 trainingSet, testSet = get_copy_lists(training, test)
