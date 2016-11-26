@@ -1,8 +1,13 @@
 from __future__ import division
+import pandas as pd
 import os
 import csv
 import copy
 import mySeed
+from utilities import *
+from AutoregModel import *
+
+
 
 
 #the dataset must be a csv file with first raw containing all attributes
@@ -186,5 +191,91 @@ def get_beat_features_csv(dictionary):
         beat.append(datapoint)
 
     get_csv(beat, 'beat')
+
+
+def create_dic (attributes):
+ new = {}
+ new.fromkeys(attributes, [])
+ return new
+
+#n is the length of every MFC coefficient vector
+def extract_MFCC (dataset, targets, n):
+
+    dataDic={}
+    dataList = []
+
+    for t in range(len(targets)):
+       for index in range(100):
+           name = targets[t]+repr(index)
+           dataDic[name] = []
+           track = []
+           for c in range(5):
+               datapoint = dataset[t*100+index][(522+c*n):(580+c*n)]
+               dataDic[name].append(datapoint)
+               track.append(datapoint)
+           dataList.append(track)
+
+
+    return dataDic, dataList
+
+def get_MFCC_datasets(dataset, n):
+
+    targets = get_GTZAN_targets()
+    MFFDic, MFFList = extract_MFCC(dataset,targets,n)
+    M1 = []
+    M2 = []
+    M3 = []
+    M4 = []
+    M5 = []
+    for i in range(len(MFFList)):
+        M1.append(MFFList[i][0])
+        M2.append(MFFList[i][1])
+        M3.append(MFFList[i][2])
+        M4.append(MFFList[i][3])
+        M5.append(MFFList[i][4])
+    #get_csv(M1,'M1')
+    #get_csv(M2, 'M2')
+    #get_csv(M3, 'M3')
+    #get_csv(M4, 'M4')
+    #get_csv(M5, 'M5')
+    return M1,M2,M3,M4,M5
+
+#n is the length of every MFC coefficient vector
+#m is the number of MFCC used
+def create_coeff_dataset_from_MFCC(dataset, n):
+
+    M = get_MFCC_datasets(dataset, n)
+    newM = []
+
+    for i in range(len(M)):
+        newM.append(get_coeffs(M[i]))
+
+    return newM
+
+def get_features(path, n):
+
+    data = pd.read_csv(path)
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

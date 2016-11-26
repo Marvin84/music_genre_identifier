@@ -1,5 +1,4 @@
 from __future__ import division
-from sklearn.model_selection import cross_val_score
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import LinearSVC
 from sklearn.linear_model import SGDClassifier
@@ -123,8 +122,7 @@ def launch_KNN (training, test, testScaler, crossValid = False):
     xTestArray = testScaler.transform(np.array(xTest))
 
     if crossValid:
-        print "KNN's 10-fold cross validation score on training set: ", \
-            get_average(cross_val_score(model, xTrain, yTrain, cv=10))
+     print"todo "#todo
     predictions = model.predict(xTestArray)
     print "KNN's accuracy: ", accuracy_score(predictions, np.array(yTest))*100
     return model
@@ -154,8 +152,7 @@ def launch_SVM_SVC (training, test, testScaler, kernel, crossValid = False):
     #    accuracy_score(predictionsDec, yTest),"and the score is: ", score
 
     if crossValid:
-        print kernel, "kernel SVM with 10-fold cross validation on training set: ",\
-            get_average(cross_val_score(model, xTrain, yTrain, cv=10))
+     print"todo "#todo
     xTest = testScaler.transform(xTest)
     predictions = model.predict(xTest)
     bestModel = get_best_model(xTrain, yTrain)
@@ -173,8 +170,7 @@ def launch_SVM_oneVsall (training, test, testScaler, crossValid = False):
     model = OneVsRestClassifier(svm.SVC(C=bestEstimator.C, kernel='rbf', gamma=bestEstimator.gamma, random_state=42)).fit(xTrain, yTrain)
 
     if crossValid:
-        print "oneVsRestClassifier SVM 10-fold cross validation on training set: ", \
-            get_average(cross_val_score(model, xTrain, yTrain, cv=10))
+     print"todo "#todo
     xTest = testScaler.transform(xTest)
     predictions = model.predict(np.array(xTest))
     print "oneVsRestClassifier SVM's accuracy: ", accuracy_score(predictions, yTest)*100
@@ -188,8 +184,7 @@ def launch_SVM_oneVsone(training, test, testScaler, crossValid = False):
     bestEstimator = get_best_estimator_by_cv(xTrain, yTrain, 10)
     model = OneVsOneClassifier(svm.SVC(C=bestEstimator.C, kernel='linear', random_state=42)).fit(xTrain, yTrain)
     if crossValid:
-        print "oneVoneClassifier SVM 10-fold cross validation on training set: ", \
-            get_average(cross_val_score(model, xTrain, yTrain, cv=10))
+     print"todo "#todo
     xTest = testScaler.transform(xTest)
     predictions = model.predict(np.array(xTest))
     print "oneVoneClassifier SVM's accurary: ", accuracy_score(predictions, np.array(yTest))*100
@@ -203,8 +198,7 @@ def launch_SVCLinear(training, test, testScaler, crossValid = False):
     xTestArray = testScaler.transform(np.array(xTest))
     model = LinearSVC(C=bestEstimator.C, random_state=42).fit(xTrain, yTrain)
     if crossValid:
-        print "SVCLinear 10-fold cross validation on training set: ", \
-            get_average(cross_val_score(model, xTrain, yTrain, cv=10))
+     print"todo "#todo
     predictions = model.predict(xTestArray)
     print "SVCLinear's accurary: ", accuracy_score(predictions, yTest)*100
     return model
@@ -217,8 +211,7 @@ def launch_SGDClassifier(training, test, testScaler, crossValid = False):
     model = SGDClassifier(loss="hinge", penalty="l2", alpha=bestEstimator.alpha, random_state=42).fit(xTrain, yTrain)
 
     if crossValid:
-        print "SGDClassifier 10-fold cross validation on training set: ", \
-            get_average(cross_val_score(model, xTrain, yTrain, cv=10))
+     print"todo "#todo
     xTest = testScaler.transform(xTest)
     predictions = model.predict(xTest)
     print "SGDClassifier's accuracy: ", accuracy_score(predictions, np.array(yTest))*100
@@ -238,8 +231,7 @@ def launch_gradientBoost (training, test, testScaler, crossValid):
               subsample=1.0, verbose=0, warm_start=False).fit(xTrain, yTrain)
 
     if crossValid:
-        print "gradientBoost 10-fold cross validation on training set: ", \
-            get_average(cross_val_score(model, xTrain, yTrain, cv=10))
+     print"todo "#todo
     xTest = testScaler.transform(xTest)
     predictions = model.predict(xTest)
     print "gradientBoost's accuracy: ", accuracy_score(predictions, np.array(yTest))*100
@@ -258,8 +250,7 @@ def launch_extraTrees (training, test, testScaler, crossValid):
            warm_start=False).fit(xTrain, yTrain)
 
     if crossValid:
-        print "gradientBoost 10-fold cross validation on training set: ", \
-            get_average(cross_val_score(model, xTrain, yTrain, cv=10))
+     print"todo "#todo
     xTest = testScaler.transform(xTest)
     predictions = model.predict(xTest)
     print "ExtraTrees's accuracy: ", accuracy_score(predictions, np.array(yTest))*100

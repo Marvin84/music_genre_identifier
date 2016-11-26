@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.decomposition import PCA
+from sklearn.cross_validation import KFold
 
 
 def get_minibatches(X,y,mb_size=20):
@@ -28,15 +29,6 @@ def standard_scale_dataset(training):
         item[-1] = int(item[-1])
     return training, scaler
 
-def scale_stochastic_dataset(xTrain, xTest):
-    scaler = StandardScaler()
-    scaler.fit(xTrain)
-    xTrain = scaler.transform(xTrain)
-    xTest = scaler.transform(xTest)
-
-    return xTrain, xTest
-
-
 # getting the scaled train and test sets and the test scaler
 # training was fit and transformed the test only fit
 def get_minmax_scaled_dataset_and_scaler(training):
@@ -62,5 +54,12 @@ def get_LDA (training):
     xTrain = myPCA.fit_transform(xTrain, yTrain)
     return np.c_[xTrain, yTrain]
 
+def get_GTZAN_targets():
+    return ['blues', 'classical', 'country', 'disco', 'hiphop', 'jazz', 'metal', 'pop', 'reggae', 'rock']
 
 
+def get_KFold_score(xTrain,yTrain):
+
+    scores = []
+
+    #todo

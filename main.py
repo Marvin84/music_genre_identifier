@@ -1,5 +1,6 @@
 from launchAlgorithms import *
 from utilities import *
+from AutoregModel import *
 
 
 if __name__ == "__main__":
@@ -8,11 +9,18 @@ if __name__ == "__main__":
     # datasetList is a list of lists of datas,
     # attributes is the first line
     # coloumns are the coloumns of vlaues refered to attributes
-    datasetList, attributes, coloumns = read_file('dataset.csv')
     # extract dictionary of classes orederd alphabetically and associated with a number
     #targets are the list of numbers associated to the ordered classes
+
+
+    datasetList, attributes, coloumns = read_file('dataset.csv')
     targetsDic, targets = get_classes(coloumns['class'])
     dataset = string_to_float(switch_label(datasetList, targets))
+    #decomment if you want to have the csv files
+    #get_MFCC_datasets(dataset, 58)
+    #M = create_coeff_dataset_from_MFCC(dataset, 58)
+    #for i in range(len(M)):
+    #    get_csv(M[i],'58M'+repr(i) )
 
     models = {}
     choice = input("Insert 1 if you have a seperate test set, otherwise 2\n")
@@ -94,7 +102,7 @@ if __name__ == "__main__":
                 print "--------------"
                 print "Extra Trees Classifier evaluation"
                 trainingSet, testSet = get_copy_lists(training, test)
-                fitTransformedTraining, scaler = standard_scale_dataset (trainingSet)
+                fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler(trainingSet)
                 models['ETC'] = launch_extraTrees(fitTransformedTraining, testSet, scaler, crossValid)
                 print "--------------"
                 trainingSet, testSet = get_copy_lists(training, test)
@@ -103,8 +111,9 @@ if __name__ == "__main__":
                 print "--------------"
                 print "SVC svm evaluation with ", kernel, " kernel"
                 trainingSet, testSet = get_copy_lists(training, test)
-                fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler(trainingSet)
+                fitTransformedTraining, scaler = standard_scale_dataset (trainingSet)
                 models['svmSVC'] = launch_SVM_SVC(fitTransformedTraining, testSet, scaler, kernel, crossValid)
+                print models['svmSVC']
                 print "--------------"
                 print "OnevsAllClassifier evaluation"
                 trainingSet, testSet = get_copy_lists(training, test)
@@ -123,7 +132,7 @@ if __name__ == "__main__":
                 print "--------------"
                 print "SGDCClassifier evaluation"
                 trainingSet, testSet = get_copy_lists(training, test)
-                fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler(trainingSet)
+                fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler (trainingSet)
                 models['SGDC']= launch_SGDClassifier(fitTransformedTraining, testSet, scaler, crossValid)
                 print "--------------"
 
