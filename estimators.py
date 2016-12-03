@@ -2,6 +2,7 @@ from sklearn.linear_model import Ridge
 from sklearn.grid_search import GridSearchCV
 from scipy.stats import uniform as sp_rand
 from sklearn.grid_search import RandomizedSearchCV
+from sklearn.svm import SVC
 from sklearn import svm
 
 
@@ -25,3 +26,15 @@ def get_LinearSVC_best_estimator(xTrain, yTrain):
     grid = GridSearchCV(estimator=model, param_grid=parameters)
     grid.fit(xTrain, yTrain)
     return grid.best_estimator_
+
+def get_my_best_estimator(data, targets, folds):
+    n, d = data.shape
+
+    params_grid = [{
+        'C': [2**i for i in range(-10, 10)],
+        'gamma': [2**i for i in range(-10, 10)],
+        'kernel': ['linear', 'rbf']}]
+    gs = GridSearchCV(SVC(), params_grid, n_jobs=-1, cv=folds)
+    gs.fit(data, targets)
+    best_estimator = gs.best_estimator_
+    return best_estimator

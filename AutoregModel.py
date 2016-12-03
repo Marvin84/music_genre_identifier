@@ -1,21 +1,37 @@
-import statsmodels.api as sm
-import scipy
-import numpy as np
-#import bigfloat
-#bigfloat.exp(5000,bigfloat.precision(100))
+import statsmodels.tsa as st
+from GridSearchArima import *
+import matplotlib.pyplot as plt
+
+def get_dataset_coeff(filename):
+
+    coeffDataset=[]
+    dataset = pd.read_csv(filename)
+    M = np.array(dataset)
+
+    for item in M:
+        parameters = []
+        p = choose_model(item)['params']
+        for list_ in p:
+            for value in list_:
+                parameters.append(value)
+        coeffDataset.append(parameters)
+    return coeffDataset
 
 
-def get_coeff_datapoint(datapoint):
+#it gets the result of fitting a arima model and plot
+#normally result = bestModelIdentities['results'][pIndex]
+def plot_model(result):
+
+    # autocorrelation function of residuals
+    result.plot_predict()
+    plt.show()
+    acValues = st.stattools.acf(result.resid, unbiased=False, nlags=50, qstat=False, fft=False, alpha=None)
+    plt.plot(acValues, 'm-', label='pac')
+    plt.show()
+    plt.hist(result.resid)
+    plt.show()
 
 
-    model = sm.tsa.ARIMA(np.array(datapoint), order=(3,0,0)).fit(method='css')
 
-    return model.params.tolist()
 
-def get_coeffs(dataset):
-    new = []
-    for item in dataset:
-
-        new.append(get_coeff_datapoint(item))
-    return new
 

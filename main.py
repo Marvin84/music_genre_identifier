@@ -13,7 +13,7 @@ if __name__ == "__main__":
     #targets are the list of numbers associated to the ordered classes
 
 
-    datasetList, attributes, coloumns = read_file('dataset.csv')
+    datasetList, attributes, coloumns = read_file('BeatPitch.csv')
     targetsDic, targets = get_classes(coloumns['class'])
     dataset = string_to_float(switch_label(datasetList, targets))
     #decomment if you want to have the csv files
@@ -97,43 +97,49 @@ if __name__ == "__main__":
 
                 print "Gradient Boost Classifier evaluation"
                 trainingSet, testSet = get_copy_lists(training, test)
-                fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler(trainingSet)
-                models['GBC']= launch_gradientBoost(fitTransformedTraining, testSet, scaler, crossValid)
+                fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler (trainingSet)
+                #models['GBC']= launch_gradientBoost(np.array(dataset), fitTransformedTraining, testSet, scaler, crossValid)
                 print "--------------"
                 print "Extra Trees Classifier evaluation"
                 trainingSet, testSet = get_copy_lists(training, test)
-                fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler(trainingSet)
-                models['ETC'] = launch_extraTrees(fitTransformedTraining, testSet, scaler, crossValid)
+                fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler (trainingSet)
+                #models['ETC'] = launch_extraTrees(np.array(dataset), fitTransformedTraining, testSet, scaler, crossValid)
                 print "--------------"
                 trainingSet, testSet = get_copy_lists(training, test)
                 fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler (trainingSet)
-                models['knn'] = launch_KNN(fitTransformedTraining, test, scaler, crossValid)
+                models['knn'] = launch_KNN(np.array(dataset), fitTransformedTraining, test, scaler, crossValid)
+                print "--------------"
+                print "Svm evaluation"
+                trainingSet, testSet = get_copy_lists(training, test)
+                fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler(trainingSet)
+                models['svm'] = launch_svm(np.array(dataset), fitTransformedTraining, testSet, scaler, crossValid)
+                #print models['svm']
                 print "--------------"
                 print "SVC svm evaluation with ", kernel, " kernel"
                 trainingSet, testSet = get_copy_lists(training, test)
-                fitTransformedTraining, scaler = standard_scale_dataset (trainingSet)
-                models['svmSVC'] = launch_SVM_SVC(fitTransformedTraining, testSet, scaler, kernel, crossValid)
-                print models['svmSVC']
+                fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler (trainingSet)
+                models['svmSVC'] = launch_SVM_SVC(np.array(dataset), fitTransformedTraining, testSet, scaler, kernel, crossValid)
+                #print models['svmSVC']
                 print "--------------"
                 print "OnevsAllClassifier evaluation"
                 trainingSet, testSet = get_copy_lists(training, test)
                 fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler(trainingSet)
-                models['svmOnevsAll'] = launch_SVM_oneVsall(fitTransformedTraining, testSet, scaler, crossValid)
+                models['svmOnevsAll'] = launch_SVM_oneVsall(np.array(dataset), fitTransformedTraining, testSet, scaler, crossValid)
                 print "--------------"
                 print "OnevsOneClassifier evaluation"
                 trainingSet, testSet = get_copy_lists(training, test)
                 fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler(trainingSet)
-                models['svmOnevsOne'] = launch_SVM_oneVsone(fitTransformedTraining, testSet, scaler, crossValid)
+                models['svmOnevsOne'] = launch_SVM_oneVsone(np.array(dataset), fitTransformedTraining, testSet, scaler, crossValid)
                 print "--------------"
                 print "SVCLinear evaluation"
                 trainingSet, testSet = get_copy_lists(training, test)
                 fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler(trainingSet)
-                models['SVCLinear'] = launch_SVCLinear(fitTransformedTraining, testSet, scaler, crossValid)
+                models['SVCLinear'] = launch_SVCLinear(np.array(dataset), fitTransformedTraining, testSet, scaler, crossValid)
                 print "--------------"
                 print "SGDCClassifier evaluation"
                 trainingSet, testSet = get_copy_lists(training, test)
                 fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler (trainingSet)
-                models['SGDC']= launch_SGDClassifier(fitTransformedTraining, testSet, scaler, crossValid)
+                #models['SGDC']= launch_SGDClassifier(np.array(dataset), fitTransformedTraining, testSet, scaler, crossValid)
                 print "--------------"
 
 

@@ -1,7 +1,6 @@
 import numpy as np
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.decomposition import PCA
-from sklearn.cross_validation import KFold
 
 
 def get_minibatches(X,y,mb_size=20):
@@ -58,8 +57,3 @@ def get_GTZAN_targets():
     return ['blues', 'classical', 'country', 'disco', 'hiphop', 'jazz', 'metal', 'pop', 'reggae', 'rock']
 
 
-def get_KFold_score(xTrain,yTrain):
-
-    scores = []
-
-    #todo
