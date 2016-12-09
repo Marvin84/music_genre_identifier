@@ -13,7 +13,7 @@ if __name__ == "__main__":
     #targets are the list of numbers associated to the ordered classes
 
 
-    datasetList, attributes, coloumns = read_file('BeatPitch.csv')
+    datasetList, attributes, coloumns = read_file('AMlab.csv')
     targetsDic, targets = get_classes(coloumns['class'])
     dataset = string_to_float(switch_label(datasetList, targets))
     #decomment if you want to have the csv files
@@ -28,7 +28,7 @@ if __name__ == "__main__":
         if choice == 1:
             training = dataset
             filename = input("insert the path to test set")
-            test, testAttributes, testColoumns = read_file('/dataset.csv')
+            test, testAttributes, testColoumns = read_file('/datasetnod.csv')
 
         else:
             percentageTrain = input("Insert percentage of the training set\n")
@@ -139,7 +139,7 @@ if __name__ == "__main__":
                 print "SGDCClassifier evaluation"
                 trainingSet, testSet = get_copy_lists(training, test)
                 fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler (trainingSet)
-                #models['SGDC']= launch_SGDClassifier(np.array(dataset), fitTransformedTraining, testSet, scaler, crossValid)
+                models['SGDC']= launch_SGDClassifier(np.array(dataset), fitTransformedTraining, testSet, scaler, crossValid)
                 print "--------------"
 
 

@@ -116,18 +116,20 @@ def launch_oneVsone_qn(training, test, targets, percentageLabel, r):
 #starting with supervised algorithm
 #
 
-def launch_KNN (dataset, training, test, scaler, crossValid = False):
+def launch_KNN (dataset, training, test, testScaler, crossValid = False):
 
     X = dataset[:,:-1]
     y = dataset[:,-1]
     xTrain, yTrain, xTest, yTest = get_supervised_dataset(training, test)
     model = KNeighborsClassifier(n_neighbors=7).fit(xTrain, yTrain)
-    X = scaler.fit_transform(X)
-    xTestArray = scaler.transform(np.array(xTest))
+
+    trainScaler = MinMaxScaler(feature_range=(-1,1))
+    X = trainScaler.fit_transform(X)
+    xTestArray = testScaler.transform(np.array(xTest))
 
     if crossValid:
         print "KNN 10-fold cross validation: ", \
-            get_average(cross_val_score(model, X, y, cv=10))
+            get_average(cross_val_score(model, X, y, cv=10))*100
 
     predictions = model.predict(xTestArray)
     print "KNN SVM 10-fold cross validation on training set: ", \
@@ -136,7 +138,7 @@ def launch_KNN (dataset, training, test, scaler, crossValid = False):
     return model
 
 
-def launch_SVM_SVC (dataset, training, test, scaler, kernel, crossValid = False):
+def launch_SVM_SVC (dataset, training, test, testScaler, kernel, crossValid = False):
     #here the multiclass is supported by one vs one
     #gamma must be set only for rbf and poly
 
@@ -154,9 +156,11 @@ def launch_SVM_SVC (dataset, training, test, scaler, kernel, crossValid = False)
 
     else: 'unvalid value for kernel'
     bestModel = get_best_model(xTrain, yTrain)
-    xTest = scaler.transform(xTest)
-    X = scaler.fit_transform(X)
 
+
+    trainScaler = MinMaxScaler(feature_range=(-1,1))
+    X = trainScaler.fit_transform(X)
+    xTest = testScaler.transform(xTest)
 
     if crossValid:
         print "SVM 10-fold cross validation: ", \
@@ -175,19 +179,22 @@ def launch_SVM_SVC (dataset, training, test, scaler, kernel, crossValid = False)
 
 
 #using the oneVsRestClassifier of SVM
-def launch_SVM_oneVsall (dataset, training, test, scaler, crossValid = False):
+def launch_SVM_oneVsall (dataset, training, test, testScaler, crossValid = False):
 
     X = dataset[:, :-1]
     y = dataset[:, -1]
     xTrain, yTrain, xTest, yTest = get_supervised_dataset(training, test)
     bestEstimator = get_best_estimator_by_cv(xTrain, yTrain, 10)
     model = OneVsRestClassifier(svm.SVC(C=bestEstimator.C, kernel='rbf', gamma=bestEstimator.gamma, random_state=42)).fit(xTrain, yTrain)
-    xTest = scaler.transform(xTest)
-    X = scaler.fit_transform(X)
+
+    trainScaler = MinMaxScaler(feature_range=(-1, 1))
+    X = trainScaler.fit_transform(X)
+    xTest = testScaler.transform(xTest)
+
 
     if crossValid:
         print "oneVsRestClassifier SVM 10-fold cross validation: ", \
-            get_average(cross_val_score(model, X, y, cv=10))
+            get_average(cross_val_score(model, X, y, cv=10))*100
 
 
     predictions = model.predict(np.array(xTest))
@@ -198,18 +205,21 @@ def launch_SVM_oneVsall (dataset, training, test, scaler, crossValid = False):
 
 
 #using the oneVsOneClassifier of SVM
-def launch_SVM_oneVsone(dataset, training, test, scaler, crossValid = False):
+def launch_SVM_oneVsone(dataset, training, test, testScaler, crossValid = False):
 
     X = dataset[:, :-1]
     y = dataset[:, -1]
     xTrain, yTrain, xTest, yTest = get_supervised_dataset(training, test)
     bestEstimator = get_best_estimator_by_cv(xTrain, yTrain, 10)
     model = OneVsOneClassifier(svm.SVC(C=bestEstimator.C, kernel='linear', random_state=42)).fit(xTrain, yTrain)
-    xTest = scaler.transform(xTest)
-    X = scaler.fit_transform(X)
+
+    trainScaler = MinMaxScaler(feature_range=(-1, 1))
+    X = trainScaler.fit_transform(X)
+    xTest = testScaler.transform(xTest)
+
     if crossValid:
         print "oneVsoneClassifier SVM 10-fold cross validation: ", \
-            get_average(cross_val_score(model, X, y, cv=10))
+            get_average(cross_val_score(model, X, y, cv=10))*100
 
     predictions = model.predict(np.array(xTest))
     print "oneVsoneClassifier SVM 10-fold cross validation on training set: ", \
@@ -218,29 +228,31 @@ def launch_SVM_oneVsone(dataset, training, test, scaler, crossValid = False):
     return model
 
 #using the SVCLinear
-def launch_SVCLinear(dataset, training, test, scaler, crossValid = False):
+def launch_SVCLinear(dataset, training, test, testScaler, crossValid = False):
 
     X = dataset[:, :-1]
     y = dataset[:, -1]
     xTrain, yTrain, xTest, yTest = get_supervised_dataset(training, test)
     bestEstimator = get_best_estimator_by_cv(xTrain, yTrain, 10)
     model = LinearSVC(C=bestEstimator.C, random_state=42).fit(xTrain, yTrain)
-    xTest = scaler.transform(np.array(xTest))
-    X = scaler.fit_transform(X)
+
+    trainScaler = MinMaxScaler(feature_range=(-1, 1))
+    X = trainScaler.fit_transform(X)
+    xTest = testScaler.transform(np.array(xTest))
 
     if crossValid:
         print "SVCLinear 10-fold cross validation: ", \
-            get_average(cross_val_score(model, X, y, cv=10))
-    predictions = model.predict(xTest)
+            get_average(cross_val_score(model, X, y, cv=10))*100
 
-    print "SVCLinear 10-fold cross validation on training set: ", \
+        predictions = model.predict(xTest)
+        print "SVCLinear 10-fold cross validation on training set: ", \
         get_average(cross_val_score(model, xTrain, yTrain, cv=10)), \
         "SVCLinear's accurary: ", accuracy_score(predictions, yTest)*100
     return model
 
 
 #svm with my grid_search
-def launch_svm(dataset, training, test, scaler, crossValid = False):
+def launch_svm(dataset, training, test, testScaler, crossValid = False):
 
     X = dataset[:, :-1]
     y = dataset[:, -1]
@@ -248,11 +260,13 @@ def launch_svm(dataset, training, test, scaler, crossValid = False):
     bestEstimator = get_my_best_estimator(xTrain, yTrain, 10)
     model = svm.SVC(C=bestEstimator.C, decision_function_shape='ovo',gamma= bestEstimator.gamma, kernel=bestEstimator.kernel).fit(xTrain, yTrain)
 
-    xTest = scaler.transform(xTest)
-    X = scaler.fit_transform(X)
+    trainScaler = MinMaxScaler(feature_range=(-1, 1))
+    X = trainScaler.fit_transform(X)
+    xTest = testScaler.transform(xTest)
+
 
     if crossValid:
-        print "SVM 10-fold cross validation: ", get_average(cross_val_score(model, X, y, cv=10)) * 100
+        print "SVM 10-fold cross validation: ", get_average(cross_val_score(model, X, y, cv=10))* 100
 
     predictions = model.predict(xTest)
 
@@ -263,19 +277,22 @@ def launch_svm(dataset, training, test, scaler, crossValid = False):
 
 
 #using the stochastic
-def launch_SGDClassifier(dataset, training, test, scaler, crossValid = False):
+def launch_SGDClassifier(dataset, training, test, testScaler, crossValid = False):
 
     X = dataset[:, :-1]
     y = dataset[:, -1]
     xTrain, yTrain, xTest, yTest = get_supervised_dataset(training, test)
     bestEstimator = get_SGDC_best_estimator(xTrain, yTrain)
     model = SGDClassifier(loss="hinge", penalty="l2", alpha=bestEstimator.alpha, random_state=42).fit(xTrain, yTrain)
-    xTest = scaler.transform(xTest)
-    X = scaler.fit_transform(X)
+
+    trainScaler = MinMaxScaler(feature_range=(-1, 1))
+    X = trainScaler.fit_transform(X)
+    xTest = testScaler.transform(xTest)
+
 
     if crossValid:
         print "SGDClassifier 10-fold cross validation: ", \
-            get_average(cross_val_score(model, X, y, cv=10))
+            get_average(cross_val_score(model, X, y, cv=10))*100
 
 
     predictions = model.predict(xTest)
@@ -286,84 +303,5 @@ def launch_SGDClassifier(dataset, training, test, scaler, crossValid = False):
 
 
 
-def launch_gradientBoost (dataset, training, test, scaler, crossValid):
-
-    X = dataset[:, :-1]
-    y = dataset[:, -1]
-    xTrain, yTrain, xTest, yTest = get_supervised_dataset(training, test)
-    model = GradientBoostingClassifier(criterion='friedman_mse', init=None,
-              learning_rate=0.0829819533259, loss='deviance', max_depth=4,
-              max_features='sqrt', max_leaf_nodes=None,
-              min_impurity_split=1e-07, min_samples_leaf=1,
-              min_samples_split=2, min_weight_fraction_leaf=0.0,
-              n_estimators=946, presort='auto', random_state=4,
-              subsample=1.0, verbose=0, warm_start=False).fit(xTrain, yTrain)
-    xTest = scaler.transform(xTest)
-    X = scaler.fit_transform(X)
-
-    if crossValid:
-        print "gradientBoost 10-fold cross validation: ", \
-            get_average(cross_val_score(model, X, y, cv=10))
-    predictions = model.predict(xTest)
-    print "gradientBoost 10-fold cross validation on training set: ", \
-        get_average(cross_val_score(model, xTrain, yTrain, cv=10)), \
-        "gradientBoost's accuracy: ", accuracy_score(predictions, np.array(yTest))*100
-    return model
-
-
-def launch_extraTrees (dataset, training, test, scaler, crossValid):
-
-    X = dataset[:, :-1]
-    y = dataset[:, -1]
-    xTrain, yTrain, xTest, yTest = get_supervised_dataset(training, test)
-    '''model = ExtraTreesClassifier(bootstrap=True, class_weight=None, criterion='entropy',
-           max_depth=None, max_features=0.667097169797,
-           max_leaf_nodes=None, min_impurity_split=1e-07,
-           min_samples_leaf=5, min_samples_split=2,
-           min_weight_fraction_leaf=0.0, n_estimators=364, n_jobs=1,
-           oob_score=False, random_state=3, verbose=False,
-           warm_start=False).fit(xTrain, yTrain)'''
-    model = ExtraTreesClassifier(bootstrap=False, class_weight=None, criterion='gini',
-                         max_depth=None, max_features=0.884198443938,
-                         max_leaf_nodes=None, min_samples_leaf=1, min_samples_split=2,
-                         min_weight_fraction_leaf=0.0, n_estimators=368, n_jobs=1,
-                         oob_score=False, random_state=1, verbose=False,
-                         warm_start=False).fit(xTrain, yTrain)
-    '''model = ExtraTreesClassifier(bootstrap=False, class_weight=None, criterion='gini',
-                         max_depth=None, max_features='sqrt', max_leaf_nodes=None,
-                         min_samples_leaf=1, min_samples_split=2,
-                         min_weight_fraction_leaf=0.0, n_estimators=394, n_jobs=1,
-                         oob_score=False, random_state=3, verbose=False,
-                         warm_start=False).fit(xTrain, yTrain)'''
-
-    xTest = scaler.transform(xTest)
-    X = scaler.fit_transform(X)
-
-    if crossValid:
-        print "ExtraTrees 10-fold cross validation: ", \
-            get_average(cross_val_score(model, X, y, cv=10))
-
-    predictions = model.predict(xTest)
-    print "ExtraTrees 10-fold cross validation on training set: ", \
-        get_average(cross_val_score(model, xTrain, yTrain, cv=10)), \
-        "ExtraTrees's accuracy: ", accuracy_score(predictions, np.array(yTest))*100
-    return model
-
-def get_best_model(xTrain, yTrain):
-    model = SVC(C=96959.5216309, cache_size=512, class_weight=None, coef0=0.0,
-        decision_function_shape=None, degree=1, gamma=0.188129827352,
-        kernel='rbf', max_iter=599598507.0, probability=False, random_state=0,
-        shrinking=False, tol=0.00873620944293, verbose=False)
-    #model = svm.SVC(C=156.419002877, cache_size=512, class_weight=None, coef0=0.0,
-    #    decision_function_shape=None, degree=1, gamma='auto', kernel='linear',
-    #    max_iter=22073714.0, probability=False, random_state=3, shrinking=True,
-    #    tol=0.000212752230313, verbose=False)
-    #model = SVC(C=68.1615839242, cache_size=512, class_weight=None, coef0=1081.71929367,
-    #    decision_function_shape=None, degree=5.0, gamma=109.368508147,
-    #    kernel='poly', max_iter=285102549.0, probability=False, random_state=4,
-    #    shrinking=False, tol=0.000970574688949, verbose=False)
-
-    model.fit(xTrain, yTrain)
-    return model
 
 

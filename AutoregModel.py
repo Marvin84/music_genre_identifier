@@ -2,7 +2,7 @@ import statsmodels.tsa as st
 from GridSearchArima import *
 import matplotlib.pyplot as plt
 
-def get_dataset_coeff(filename):
+def get_coeffs(filename):
 
     coeffDataset=[]
     dataset = pd.read_csv(filename)
