@@ -34,9 +34,6 @@ def get_dictionary_from_dataset(filename):
     return coloumns
 
 
-
-
-
 #return a list with all targets
 def unrepeated_values(list):
     unique = []
