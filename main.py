@@ -13,15 +13,10 @@ if __name__ == "__main__":
     #targets are the list of numbers associated to the ordered classes
 
 
-    filename = 'datasetpca.csv'
+    filename = 'dataset.csv'
     datasetList, attributes, coloumns = read_file(filename)
     targetsDic, targets = get_classes(coloumns['class'])
     dataset = string_to_float(switch_label(datasetList, targets))
-    #decomment if you want to have the csv files
-    #get_MFCC_datasets(dataset, 58)
-    #M = create_coeff_dataset_from_MFCC(dataset, 58)
-    #for i in range(len(M)):
-    #    get_csv(M[i],'58M'+repr(i) )
 
     models = {}
     choice = input("Insert 1 if you have a seperate test set, otherwise 2\n")
@@ -75,7 +70,7 @@ if __name__ == "__main__":
 
 
             else:
-                cvChoice = input("Insert 1 if you want to do 10-fold cross validation on training set and 2 otherwise\n")
+                cvChoice = input("Insert 1 if you want to do 10-fold cross validation on whole dataset and 2 otherwise\n")
                 if (cvChoice == 1 or cvChoice == 2):
                     if cvChoice == 1:
                         crossValid = True
@@ -92,7 +87,7 @@ if __name__ == "__main__":
                     "unvalid choice"
                     sys.exit()
 
-                print "evaluating", filename
+                print "evaluating", filename, "with train/test split percentage ", percentageTrain,"/", 100-percentageTrain
                 data= np.array(dataset)
 
                 #launch supervised algorithms
@@ -105,22 +100,25 @@ if __name__ == "__main__":
                 trainingSet, testSet = get_copy_lists(training, test)
                 fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler (trainingSet)
                 models['svmSVC'] = launch_SVM_SVC(data, fitTransformedTraining, testSet, scaler, kernel, crossValid)
+                #print models['svmSVC']
                 print "--------------"
                 print "OnevsAllClassifier evaluation"
                 trainingSet, testSet = get_copy_lists(training, test)
                 fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler(trainingSet)
-                models['svmOnevsAll'] = launch_SVM_oneVsall(data, fitTransformedTraining, testSet, scaler, crossValid)
+                #models['svmOnevsAll'] = launch_SVM_oneVsall(data, fitTransformedTraining, testSet, scaler, crossValid)
                 #print models['svmOnevsAll']
                 print "--------------"
                 print "OnevsOneClassifier evaluation"
                 trainingSet, testSet = get_copy_lists(training, test)
                 fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler(trainingSet)
-                models['svmOnevsOne'] = launch_SVM_oneVsone(data, fitTransformedTraining, testSet, scaler, crossValid)
+                #models['svmOnevsOne'] = launch_SVM_oneVsone(data, fitTransformedTraining, testSet, scaler, crossValid)
+                #print models['svmOnevsOne']
                 print "--------------"
                 print "SVCLinear evaluation"
                 trainingSet, testSet = get_copy_lists(training, test)
-                fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler(trainingSet)
-                models['SVCLinear'] = launch_SVCLinear(data, fitTransformedTraining, testSet, scaler, crossValid)
+                fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler (trainingSet)
+                #models['SVCLinear'] = launch_SVCLinear(data, fitTransformedTraining, testSet, scaler, crossValid)
+                print models['SVCLinear']
                 print "--------------"
                 print "Svm evaluation"
                 trainingSet, testSet = get_copy_lists(training, test)
