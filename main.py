@@ -105,25 +105,25 @@ if __name__ == "__main__":
                 print "OnevsAllClassifier evaluation"
                 trainingSet, testSet = get_copy_lists(training, test)
                 fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler(trainingSet)
-                #models['svmOnevsAll'] = launch_SVM_oneVsall(data, fitTransformedTraining, testSet, scaler, crossValid)
+                models['svmOnevsAll'] = launch_SVM_oneVsall(data, fitTransformedTraining, testSet, scaler, crossValid)
                 #print models['svmOnevsAll']
                 print "--------------"
                 print "OnevsOneClassifier evaluation"
                 trainingSet, testSet = get_copy_lists(training, test)
                 fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler(trainingSet)
-                #models['svmOnevsOne'] = launch_SVM_oneVsone(data, fitTransformedTraining, testSet, scaler, crossValid)
+                models['svmOnevsOne'] = launch_SVM_oneVsone(data, fitTransformedTraining, testSet, scaler, crossValid)
                 #print models['svmOnevsOne']
                 print "--------------"
                 print "SVCLinear evaluation"
                 trainingSet, testSet = get_copy_lists(training, test)
                 fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler (trainingSet)
-                #models['SVCLinear'] = launch_SVCLinear(data, fitTransformedTraining, testSet, scaler, crossValid)
+                models['SVCLinear'] = launch_SVCLinear(data, fitTransformedTraining, testSet, scaler, crossValid)
                 print models['SVCLinear']
                 print "--------------"
                 print "Svm evaluation"
                 trainingSet, testSet = get_copy_lists(training, test)
                 fitTransformedTraining, scaler = get_minmax_scaled_dataset_and_scaler(trainingSet)
-                #models['svm'] = launch_svm(data, fitTransformedTraining, testSet, scaler, crossValid)
+                models['svm'] = launch_svm(data, fitTransformedTraining, testSet, scaler, crossValid)
                 #print models['svm']
                 print "--------------"
 
