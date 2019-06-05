@@ -75,7 +75,7 @@ def choose_model_all(observation):
                     orders.append(value)
 
                 except (ValueError, LinAlgError):
-                    print "error with", value, "with window size:", windows[i]
+                    print ("error with", value, "with window size:", windows[i])
                     pass
 
             index = aic.index(np.amin(np.array(aic)))
@@ -121,7 +121,7 @@ def choose_model_feature(observation):
                     model = sm.tsa.ARIMA(m, order=value);
                     result = model.fit(method='css');
                 except (ValueError, LinAlgError):
-                    print "error with", value, "with window size:", windows[i]
+                    print ("error with", value, "with window size:", windows[i])
                     pass
                 # e = result.resid**2
                 # errors.append(np.sum(e)/len(e))
