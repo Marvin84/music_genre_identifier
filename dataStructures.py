@@ -27,7 +27,7 @@ def get_dictionary_from_dataset(filename):
     #creates a dictionary with 'key:values' where key is the attribute and value its relatives values
     with open(os.path.dirname(os.path.abspath(__file__)) + '/'+ filename, 'r') as csvin:
         reader=csv.DictReader(csvin)
-        coloumns={k:[v] for k,v in reader.next().items()}
+        coloumns={k:[v] for k,v in next(reader).items()}
         for line in reader:
             for k,v in line.items():
                 coloumns[k].append(v)

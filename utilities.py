@@ -3,7 +3,7 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.decomposition import PCA
 from sklearn.model_selection import KFold
 from sklearn.metrics import accuracy_score
-from lagrange.utils import *
+
 from estimators import *
 
 
